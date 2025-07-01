@@ -1,19 +1,27 @@
-export default function Todo() {
-  const randomActivities = [
-    "Take a walk in nature and observe the changing seasons",
-    "Write a handwritten letter to someone you care about",
-    "Learn three new words in a foreign language",
-    "Create something with your hands - draw, craft, or cook",
-    "Call an old friend you haven't spoken to in a while",
-    "Read a chapter from a book you've been meaning to finish",
-    "Practice gratitude by listing five things you're thankful for",
-    "Organize one small area of your living space",
-    "Try a new recipe using ingredients you already have",
-    "Spend 10 minutes in complete silence and reflection",
-  ];
+"use client";
 
-  const randomActivity =
-    randomActivities[Math.floor(Math.random() * randomActivities.length)];
+import { useState, useEffect } from "react";
+
+export default function Todo() {
+  const [activity, setActivity] = useState<string>("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchActivity = async () => {
+      try {
+        const response = await fetch("/api/activity");
+        const data = await response.json();
+        setActivity(data.activity);
+      } catch (error) {
+        console.error("Error fetching activity:", error);
+        setActivity("take a moment to breathe and relax");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActivity();
+  }, []);
 
   return (
     <div className="max-w-6xl mx-auto px-8 py-8 text-center">
@@ -22,7 +30,7 @@ export default function Todo() {
           The oracle commands you to...
         </p>
         <p className="text-2xl font-bold font-newsreader leading-relaxed">
-          {randomActivity}
+          {loading ? "Consulting the oracle..." : activity}
         </p>
       </div>
     </div>
