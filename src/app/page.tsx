@@ -123,6 +123,11 @@ function HomePage() {
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto p-8">
+        {/* Main Headline */}
+        <h1 className="text-5xl font-bold mb-8 leading-tight font-newsreader">
+          Breaking: Revolutionary Photo-Journaling Platform Launches
+        </h1>
+
         <div className="flex">
           {/* Photo Content - 70% */}
           <div className="flex-[7] pr-8">
