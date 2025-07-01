@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentISTDate } from "@/lib/ist-utils";
+import { getCurrentISTDate, getISTDateString } from "@/lib/ist-utils";
+import dbConnect from "@/lib/mongodb";
+import DailyContent from "@/models/DailyContent";
 
 export async function GET(request: NextRequest) {
   try {
+    await dbConnect();
+
     const { searchParams } = new URL(request.url);
     const year = searchParams.get("year");
     const month = searchParams.get("month");
@@ -59,23 +63,20 @@ export async function GET(request: NextRequest) {
       }
 
       try {
-        // Try to fetch the daily data for this date
-        const response = await fetch(
-          `${
-            process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-          }/api/daily?date=${dateString}`,
-          {
-            headers: {
-              "User-Agent": "Calendar-API/1.0",
-            },
-          }
-        );
+        // Normalize the date to IST and query the database directly
+        const normalizedDate = getISTDateString(new Date(dateString));
+        const dailyContent = await DailyContent.findOne({
+          date: normalizedDate,
+        });
 
-        if (response.ok) {
-          const dailyData = await response.json();
+        if (dailyContent) {
           calendarData[dateString] = {
-            imageUrl: dailyData.photo?.imageUrl || null,
-            label: dailyData.photo?.label || dateString,
+            imageUrl: dailyContent.photo?.imageBlob
+              ? `data:image/jpeg;base64,${dailyContent.photo.imageBlob.toString(
+                  "base64"
+                )}`
+              : dailyContent.photo?.imageUrl || null,
+            label: dailyContent.photo?.label || dateString,
           };
         } else {
           // No data available for this date
