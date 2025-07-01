@@ -167,7 +167,7 @@ function HomePage() {
             <div className="border-t-2 border-b-2 border-black py-2">
               A HOBBY PROJECT BY&nbsp;
               <Link
-                href="https://github.com/unignoramus11"
+                href="https://github.com/unignoramus11/lumen"
                 target="_blank"
                 rel="noopener noreferrer"
               >
