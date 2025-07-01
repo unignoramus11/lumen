@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import BanterLoader from "../components/BanterLoader";
 import NewspaperDatePicker from "../components/NewspaperDatePicker";
+import PhotoContent from "../components/PhotoContent";
+import SideContent from "../components/SideContent";
 
 export default function Home() {
   const [isMobile, setIsMobile] = useState(false);
@@ -130,7 +132,22 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-8 py-12"></main>
+      <main className="max-w-6xl mx-auto p-8">
+        <div className="flex min-h-[600px]">
+          {/* Photo Content - 70% */}
+          <div className="flex-[7] pr-8">
+            <PhotoContent />
+          </div>
+
+          {/* Vertical separator line */}
+          <div className="border-l border-black"></div>
+
+          {/* Side Content - 30% */}
+          <div className="flex-[3] pl-8">
+            <SideContent />
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
