@@ -14,9 +14,11 @@ import { LoadingProvider, useLoading } from "../contexts/LoadingContext";
 
 function HomePage() {
   const [isMobile, setIsMobile] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const { allLoaded } = useLoading();
 
   useEffect(() => {
+    setIsClient(true);
     const checkDevice = () => {
       setIsMobile(window.innerWidth < 1024);
     };
@@ -29,10 +31,11 @@ function HomePage() {
     };
   }, []);
 
-  // Show loading overlay while APIs are still loading
-  const isLoading = !allLoaded;
+  // Show loading overlay while APIs are still loading (only for desktop)
+  const isLoading = !isMobile && !allLoaded;
 
-  if (isMobile) {
+  // Early return for mobile devices to prevent loading any content components
+  if (isClient && isMobile) {
     return (
       <div className="min-h-screen bg-white text-black flex items-center justify-center p-8">
         <div className="text-center max-w-md">
@@ -55,6 +58,11 @@ function HomePage() {
         </div>
       </div>
     );
+  }
+
+  // Show nothing during SSR or initial client render to prevent hydration mismatch
+  if (!isClient) {
+    return null;
   }
 
   return (
