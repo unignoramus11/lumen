@@ -8,20 +8,18 @@ interface SideContentProps {
   loading?: boolean;
 }
 
-export default function SideContent({ poem, joke, loading = false }: SideContentProps) {
-
-
-  {
-    /* get it? Light – Lumen haha I am a friggin genius */
-  }
-
+export default function SideContent({
+  poem,
+  joke,
+  loading = false,
+}: SideContentProps) {
   return (
     <div className="h-full">
       <h3 className="text-2xl font-bold mb-4">Sidebar</h3>
       <div className="space-y-4">
         {/* Poem of the Day */}
         <div className="pb-4">
-          <h4 className="font-semibold mb-2">Light Verse</h4>
+          <h4 className="font-semibold mb-2">Versetile</h4>
           {loading ? (
             <p>Loading...</p>
           ) : poem ? (
@@ -43,7 +41,7 @@ export default function SideContent({ poem, joke, loading = false }: SideContent
 
         {/* Joke of the Day */}
         <div>
-          <h4 className="font-semibold mb-2">Light Damage</h4>
+          <h4 className="font-semibold mb-2">Chuckular</h4>
           {loading ? (
             <p className="text-sm">Loading...</p>
           ) : joke ? (
