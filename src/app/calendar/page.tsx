@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { cn } from "@/lib/utils";
+import { getCurrentISTDate } from "@/lib/ist-utils";
 
 interface CalendarDay {
   imageUrl: string | null;
@@ -98,11 +99,8 @@ export default function CalendarPage() {
     }
   };
 
-  // Get current date in IST
-  const now = new Date();
-  const istNow = new Date(
-    now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
-  );
+  // Get current date in IST using utility function
+  const istNow = getCurrentISTDate();
 
   const [selectedYear, setSelectedYear] = useState(
     istNow.getFullYear().toString()
