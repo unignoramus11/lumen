@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import BanterLoader from "../components/BanterLoader";
 import NewspaperDatePicker from "../components/NewspaperDatePicker";
 import PhotoContent from "../components/PhotoContent";
