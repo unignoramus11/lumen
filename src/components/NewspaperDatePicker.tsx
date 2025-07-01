@@ -23,10 +23,6 @@ export default function NewspaperDatePicker({
   const [date, setDate] = useState<Date>(selectedDate);
   const [isOpen, setIsOpen] = useState(false);
 
-  const formatDate = (date: Date) => {
-    return formatISTDate(date);
-  };
-
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
@@ -42,7 +38,7 @@ export default function NewspaperDatePicker({
             }
           }}
         >
-          {formatDate(date)}
+          {formatISTDate(date)}
         </span>
       </PopoverTrigger>
       <PopoverContent

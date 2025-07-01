@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import BanterLoader from "../../components/BanterLoader";
+import { formatISTDate } from "@/lib/ist-utils";
 
 interface PublishData {
   headline: string;
@@ -18,7 +18,6 @@ interface ToastData {
 }
 
 export default function PublishPage() {
-  const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -121,7 +120,7 @@ export default function PublishPage() {
         setIsAuthenticated(true);
         loadExistingData();
       } else {
-        showToast("Invalid administrator credentials", "error");
+        showToast("Invalid credentials", "error");
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -276,7 +275,7 @@ export default function PublishPage() {
             Lumen Sigma
           </h1>
           <p className="text-lg leading-relaxed font-newsreader">
-            This is a mobile-only publisher&apos;s page
+            This is a mobile-only editor&apos;s page
             <br />
             Again, mostly because I am lazy :P
           </p>
@@ -299,7 +298,7 @@ export default function PublishPage() {
                     ESTABLISHED 2025
                   </span>
                   <span className="px-2 py-1 rounded justify-self-center">
-                    ADMIN ACCESS
+                    EDITOR ACCESS
                   </span>
                   <span className="px-2 py-1 rounded justify-self-end">
                     MOBILE ONLY
@@ -323,7 +322,7 @@ export default function PublishPage() {
               </h1>
 
               <div className="border-t-2 border-b-2 border-black py-2">
-                PUBLISHER AUTHENTICATION REQUIRED
+                EDITOR AUTHENTICATION REQUIRED
               </div>
             </div>
           </div>
@@ -332,17 +331,17 @@ export default function PublishPage() {
         <main className="max-w-2xl mx-auto p-8">
           <div className="border-2 border-black p-8 bg-white">
             <h2 className="text-3xl font-bold mb-6 text-center font-newsreader">
-              ADMIN LOGIN
+              EDITOR LOGIN
             </h2>
 
             <form onSubmit={handleLogin} className="space-y-6">
               <div>
                 <label className="block text-sm font-bold mb-2 uppercase tracking-wide">
-                  Administrator Password
+                  Password
                 </label>
                 <input
                   type="password"
-                  placeholder="Enter admin password"
+                  placeholder="Enter password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full p-4 border-2 border-black bg-white text-black focus:outline-none font-newsreader"
@@ -405,14 +404,10 @@ export default function PublishPage() {
                   ESTABLISHED 2025
                 </span>
                 <span className="px-2 py-1 rounded justify-self-center">
-                  PUBLISHER PANEL
+                  EDITOR PANEL
                 </span>
                 <span className="px-2 py-1 rounded justify-self-end">
-                  {new Date().toLocaleDateString("en-US", {
-                    timeZone: "Asia/Kolkata",
-                    month: "short",
-                    day: "numeric",
-                  })}
+                  {formatISTDate(new Date())}
                 </span>
               </div>
             </div>
@@ -447,13 +442,7 @@ export default function PublishPage() {
               {isEditing ? "EDIT TODAY'S EDITION" : "PUBLISH TODAY'S EDITION"}
             </h2>
             <p className="text-center text-lg mt-2 font-newsreader">
-              {new Date().toLocaleDateString("en-US", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                timeZone: "Asia/Kolkata",
-              })}
+              {formatISTDate(new Date())}
             </p>
           </div>
 
@@ -491,17 +480,16 @@ export default function PublishPage() {
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-full p-6 border-4 border-dashed border-black bg-gray-50 hover:bg-gray-100 transition-colors text-center font-newsreader"
+                    className="w-full p-6 border-2 border-dashed border-black bg-gray-50 hover:bg-gray-100 transition-colors text-center font-newsreader"
                   >
                     <div className="space-y-2">
-                      <div className="text-3xl">📷</div>
                       <div className="text-lg font-bold">
                         {publishData.photo
                           ? "CHANGE PHOTOGRAPH"
                           : "UPLOAD PHOTOGRAPH"}
                       </div>
                       <div className="text-sm text-gray-600">
-                        Click to select an image file
+                        Tap to select an image file
                       </div>
                     </div>
                   </button>
@@ -518,7 +506,7 @@ export default function PublishPage() {
                   {publishData.photo && (
                     <div className="border-2 border-black p-4 bg-yellow-50">
                       <p className="text-sm font-bold text-center">
-                        ✓ PHOTOGRAPH SELECTED: {publishData.photo.name}
+                        PHOTOGRAPH SELECTED: {publishData.photo.name}
                       </p>
                       <p className="text-xs text-center mt-1 text-gray-600">
                         Image will be automatically compressed to under 100KB
@@ -568,22 +556,15 @@ export default function PublishPage() {
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="grid grid-cols-2 gap-4">
-                <button
-                  type="button"
-                  onClick={() => router.push("/")}
-                  className="p-4 border-2 border-black bg-white text-black font-bold uppercase tracking-wide hover:bg-black hover:text-white transition-colors font-newsreader"
-                >
-                  ← Return to Paper
-                </button>
+              {/* Action Button */}
+              <div className="flex w-full">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="p-4 border-2 border-black bg-black text-white font-bold uppercase tracking-wide disabled:opacity-50 hover:bg-white hover:text-black transition-colors font-newsreader"
+                  className="p-4 border-2 border-black bg-black text-white font-bold uppercase tracking-wide disabled:opacity-50 hover:bg-white hover:text-black transition-colors font-newsreader w-full"
                 >
                   {loading
-                    ? "PUBLISHING ..."
+                    ? "PUBLISHING..."
                     : isEditing
                     ? "UPDATE EDITION"
                     : "PUBLISH EDITION"}
