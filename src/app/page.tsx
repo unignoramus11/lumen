@@ -8,7 +8,7 @@ import NewspaperDatePicker from "../components/NewspaperDatePicker";
 
 export default function Home() {
   const [isMobile, setIsMobile] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [logoLoaded, setLogoLoaded] = useState(false);
 
   useEffect(() => {
     const checkDevice = () => {
@@ -18,22 +18,39 @@ export default function Home() {
     checkDevice();
     window.addEventListener("resize", checkDevice);
 
-    // Simulate loading time to prevent flash
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-
     return () => {
       window.removeEventListener("resize", checkDevice);
-      clearTimeout(timer);
     };
   }, []);
 
-  if (isLoading) {
+  const handleLogoLoad = () => {
+    if (!logoLoaded) {
+      // Add a small delay to prevent flash
+      setTimeout(() => {
+        setLogoLoaded(true);
+      }, 1000);
+    }
+  };
+
+  // Show loading screen while logo hasn't loaded yet
+  if (!logoLoaded) {
     return (
-      <div className="min-h-screen bg-white text-black flex items-center justify-center">
-        <BanterLoader />
-      </div>
+      <>
+        {/* Hidden images to trigger loading */}
+        <div style={{ position: "absolute", left: "-9999px", top: "-9999px" }}>
+          <Image
+            src="/logo.png"
+            alt="Lumen Sigma Logo"
+            width={128}
+            height={128}
+            priority
+            onLoad={handleLogoLoad}
+          />
+        </div>
+        <div className="min-h-screen bg-white text-black flex items-center justify-center">
+          <BanterLoader />
+        </div>
+      </>
     );
   }
 
