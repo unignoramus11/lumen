@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState, useRef } from "react";
 import BanterLoader from "../components/BanterLoader";
 import NewspaperDatePicker from "../components/NewspaperDatePicker";
 import PhotoContent from "../components/PhotoContent";
@@ -10,12 +11,37 @@ import SideContent from "../components/SideContent";
 import Facts from "../components/Facts";
 import Todo from "../components/Todo";
 import Comic from "../components/Comic";
-import { LoadingProvider, useLoading } from "../contexts/LoadingContext";
+import { fetchDailyData } from "../lib/api";
+import type { DailyData } from "../types";
 
 function HomePage() {
+  const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
   const [isClient, setIsClient] = useState(false);
-  const { allLoaded } = useLoading();
+  const [dailyData, setDailyData] = useState<DailyData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout | null>(
+    null
+  );
+
+  const handleLongPressStart = (e: React.TouchEvent | React.MouseEvent) => {
+    e.preventDefault();
+    if (isMobile) {
+      const timer = setTimeout(() => {
+        router.push("/publish");
+      }, 3000);
+      setLongPressTimer(timer);
+    }
+  };
+
+  const handleLongPressEnd = (e: React.TouchEvent | React.MouseEvent) => {
+    e.preventDefault();
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      setLongPressTimer(null);
+    }
+  };
 
   useEffect(() => {
     setIsClient(true);
@@ -28,11 +54,28 @@ function HomePage() {
 
     return () => {
       window.removeEventListener("resize", checkDevice);
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+      }
     };
-  }, []);
+  }, [longPressTimer]);
 
-  // Show loading overlay while APIs are still loading (only for desktop)
-  const isLoading = !isMobile && !allLoaded;
+  useEffect(() => {
+    if (isClient && !isMobile) {
+      // Convert selected date to IST and format as YYYY-MM-DD
+      const dateString = selectedDate.toLocaleDateString("en-CA", {
+        timeZone: "Asia/Kolkata",
+      });
+      setLoading(true);
+      fetchDailyData(dateString)
+        .then(setDailyData)
+        .catch(console.error)
+        .finally(() => setLoading(false));
+    }
+  }, [selectedDate, isClient, isMobile]);
+
+  // Show loading overlay while data is loading (only for desktop)
+  const isLoading = !isMobile && loading;
 
   // Early return for mobile devices to prevent loading any content components
   if (isClient && isMobile) {
@@ -46,6 +89,12 @@ function HomePage() {
             width={128}
             height={128}
             priority
+            onTouchStart={handleLongPressStart}
+            onTouchEnd={handleLongPressEnd}
+            onTouchCancel={handleLongPressEnd}
+            onMouseDown={handleLongPressStart}
+            onMouseUp={handleLongPressEnd}
+            onMouseLeave={handleLongPressEnd}
           />
           <h1 className="text-3xl font-bold mb-4 font-unifraktur">
             Lumen Sigma
@@ -87,7 +136,10 @@ function HomePage() {
                   DAILY(?)
                 </span>
                 <div className="justify-self-end">
-                  <NewspaperDatePicker />
+                  <NewspaperDatePicker
+                    selectedDate={selectedDate}
+                    onDateChange={setSelectedDate}
+                  />
                 </div>
               </div>
             </div>
@@ -123,43 +175,62 @@ function HomePage() {
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto p-8">
-        {/* Main Headline */}
-        <h1 className="text-5xl font-bold mb-8 leading-tight font-newsreader">
-          Breaking: Revolutionary Photo-Journaling Platform Launches
-        </h1>
-
-        <div className="flex">
-          {/* Photo Content - 70% */}
-          <div className="flex-[7] pr-8">
-            <PhotoContent />
+        {!loading && dailyData === null ? (
+          <div className="text-center py-20">
+            <h1 className="text-6xl font-bold font-newsreader">i forgor</h1>
           </div>
+        ) : (
+          <>
+            {/* Main Headline */}
+            <h1 className="text-5xl font-bold mb-8 leading-tight font-newsreader">
+              {dailyData?.headline ||
+                "Breaking: Revolutionary Photo-Journaling Platform Launches"}
+            </h1>
 
-          {/* Vertical separator line */}
-          <div className="border-l border-black"></div>
+            <div className="flex">
+              {/* Photo Content - 70% */}
+              <div className="flex-[7] pr-8">
+                <PhotoContent photo={dailyData?.photo} loading={loading} />
+              </div>
 
-          {/* Side Content - 30% */}
-          <div className="flex-[3] pl-8">
-            <SideContent />
-          </div>
-        </div>
+              {/* Vertical separator line */}
+              <div className="border-l border-black"></div>
+
+              {/* Side Content - 30% */}
+              <div className="flex-[3] pl-8">
+                <SideContent
+                  poem={dailyData?.poem}
+                  joke={dailyData?.joke}
+                  loading={loading}
+                />
+              </div>
+            </div>
+          </>
+        )}
       </main>
 
-      {/* Comic Strip Section */}
-      <Comic />
+      {/* Only show these sections if we have data or are loading */}
+      {(loading || dailyData !== null) && (
+        <>
+          {/* Comic Strip Section */}
+          <Comic comic={dailyData?.comic} loading={loading} />
 
-      {/* Facts Component */}
-      <Facts />
+          {/* Facts Component */}
+          <Facts
+            catFact={dailyData?.catFact}
+            dogFact={dailyData?.dogFact}
+            triviaFact={dailyData?.triviaFact}
+            loading={loading}
+          />
 
-      {/* Todo Section */}
-      <Todo />
+          {/* Todo Section */}
+          <Todo activity={dailyData?.activity} loading={loading} />
+        </>
+      )}
     </div>
   );
 }
 
 export default function Home() {
-  return (
-    <LoadingProvider>
-      <HomePage />
-    </LoadingProvider>
-  );
+  return <HomePage />;
 }

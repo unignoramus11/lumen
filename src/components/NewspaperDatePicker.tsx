@@ -7,24 +7,24 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { formatISTDate, getCurrentISTDate } from "@/lib/ist-utils";
 
 interface NewspaperDatePickerProps {
   className?: string;
+  selectedDate?: Date;
+  onDateChange?: (date: Date) => void;
 }
 
 export default function NewspaperDatePicker({
   className,
+  selectedDate = new Date(),
+  onDateChange,
 }: NewspaperDatePickerProps) {
-  const [date, setDate] = useState<Date>(new Date());
+  const [date, setDate] = useState<Date>(selectedDate);
   const [isOpen, setIsOpen] = useState(false);
 
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    return formatISTDate(date);
   };
 
   return (
@@ -56,8 +56,14 @@ export default function NewspaperDatePicker({
           onSelect={(newDate) => {
             if (newDate) {
               setDate(newDate);
+              onDateChange?.(newDate);
               setIsOpen(false);
             }
+          }}
+          disabled={(date) => {
+            // Get current date in IST
+            const nowIST = getCurrentISTDate();
+            return date > nowIST;
           }}
           className="bg-white w-auto"
         />

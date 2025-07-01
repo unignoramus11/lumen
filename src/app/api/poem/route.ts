@@ -24,7 +24,6 @@ export async function GET() {
         title: randomPoem.title,
         author: randomPoem.author,
         lines: cleanedLines,
-        linecount: randomPoem.linecount,
       });
     } else {
       throw new Error("No poems found");
@@ -36,7 +35,6 @@ export async function GET() {
         title: "Silence",
         author: "Unknown",
         lines: ["In quiet moments", "We find peace", "Within ourselves"],
-        linecount: "3",
       },
       { status: 500 }
     );

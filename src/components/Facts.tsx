@@ -1,57 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useLoading } from "../contexts/LoadingContext";
+import type { CatFact, DogFact, TriviaFact } from "../types";
 
-export default function Facts() {
-  const [catFact, setCatFact] = useState<string>("");
-  const [triviaFact, setTriviaFact] = useState<string>("");
-  const [dogFact, setDogFact] = useState<string>("");
-  const [loading, setLoading] = useState(true);
-  const { setComponentLoading } = useLoading();
+interface FactsProps {
+  catFact?: CatFact;
+  dogFact?: DogFact;
+  triviaFact?: TriviaFact;
+  loading?: boolean;
+}
 
-  useEffect(() => {
-    setComponentLoading("facts", true);
+export default function Facts({ catFact, dogFact, triviaFact, loading = false }: FactsProps) {
 
-    const fetchFacts = async () => {
-      try {
-        // Fetch all facts in parallel
-        const [catResponse, triviaResponse, dogResponse] = await Promise.all([
-          fetch("/api/cat-fact"),
-          fetch("/api/trivia-fact"),
-          fetch("/api/dog-fact"),
-        ]);
-
-        const [catData, triviaData, dogData] = await Promise.all([
-          catResponse.json(),
-          triviaResponse.json(),
-          dogResponse.json(),
-        ]);
-
-        setCatFact(catData.fact);
-        setTriviaFact(triviaData.fact);
-        setDogFact(dogData.fact);
-      } catch (error) {
-        console.error("Error fetching facts:", error);
-        // Set fallback facts
-        setCatFact(
-          "Cats have a third eyelid called a nictitating membrane that helps protect their eyes during hunting and play."
-        );
-        setTriviaFact(
-          "Honey never spoils. Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible."
-        );
-        setDogFact(
-          "Dogs have around 300 million olfactory receptors in their noses, compared to humans who have about 6 million."
-        );
-      } finally {
-        setLoading(false);
-        setComponentLoading("facts", false);
-      }
-    };
-
-    fetchFacts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // setComponentLoading is stable with useCallback
 
   return (
     <div className="max-w-6xl mx-auto px-8 py-8">
@@ -61,7 +20,7 @@ export default function Facts() {
           <h3 className="text-xl font-bold mb-4">Meow Mix</h3>
           <div className="flex-1 flex items-center">
             <p className="text-sm leading-relaxed w-full">
-              {loading ? "Loading cat wisdom..." : catFact}
+              {loading ? "Loading cat wisdom..." : catFact?.fact || "No cat fact available"}
             </p>
           </div>
         </div>
@@ -74,7 +33,7 @@ export default function Facts() {
           <h3 className="text-xl font-bold mb-4">Trivia Dump</h3>
           <div className="flex-1 flex items-center">
             <p className="text-sm leading-relaxed w-full">
-              {loading ? "Gathering trivia..." : triviaFact}
+              {loading ? "Gathering trivia..." : triviaFact?.fact || "No trivia available"}
             </p>
           </div>
         </div>
@@ -87,7 +46,7 @@ export default function Facts() {
           <h3 className="text-xl font-bold mb-4">Pup Culture</h3>
           <div className="flex-1 flex items-center">
             <p className="text-sm leading-relaxed w-full">
-              {loading ? "Fetching dog facts..." : dogFact}
+              {loading ? "Fetching dog facts..." : dogFact?.fact || "No dog fact available"}
             </p>
           </div>
         </div>

@@ -2,53 +2,20 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useLoading } from "../contexts/LoadingContext";
+import type { PhotoData } from "../types";
 
-interface PhotoData {
-  imageUrl: string;
-  label: string;
+interface PhotoContentProps {
+  photo?: PhotoData;
+  loading?: boolean;
 }
 
-export default function PhotoContent() {
-  const [photo, setPhoto] = useState<PhotoData | null>(null);
-  const [loading, setLoading] = useState(true);
+export default function PhotoContent({ photo, loading: propLoading = false }: PhotoContentProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
-  const { setComponentLoading } = useLoading();
 
+  // Reset image loaded state when photo changes
   useEffect(() => {
-    setComponentLoading("photo", true);
-
-    const fetchPhoto = async () => {
-      try {
-        const response = await fetch("/api/photo");
-        const data = await response.json();
-        setPhoto(data);
-        // Reset image loaded state when new photo is fetched
-        setImageLoaded(false);
-      } catch (error) {
-        console.error("Error fetching photo:", error);
-        setPhoto({
-          imageUrl: "https://picsum.photos/800/600?random=fallback",
-          label:
-            "A beautiful moment captured in time, showcasing the art of photography.",
-        });
-        setImageLoaded(false);
-      } finally {
-        setLoading(false);
-        // Note: Don't set setComponentLoading(false) here - wait for image to load
-      }
-    };
-
-    fetchPhoto();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // setComponentLoading is stable with useCallback
-
-  // Update global loading state when both API and image are loaded
-  useEffect(() => {
-    if (!loading && imageLoaded) {
-      setComponentLoading("photo", false);
-    }
-  }, [loading, imageLoaded, setComponentLoading]);
+    setImageLoaded(false);
+  }, [photo]);
 
   const handleImageLoad = () => {
     setImageLoaded(true);
@@ -58,10 +25,12 @@ export default function PhotoContent() {
     setImageLoaded(true); // Consider it "loaded" even on error to prevent infinite loading
   };
 
+  console.log("PhotoContent rendered with photo:", photo);
+
   return (
     <div className="h-full">
       <div className="space-y-6">
-        {loading || !imageLoaded ? (
+        {propLoading || !imageLoaded ? (
           <div className="flex items-center justify-center h-96">
             <p className="text-lg">Loading featured photo...</p>
           </div>
@@ -69,7 +38,7 @@ export default function PhotoContent() {
 
         {photo && (
           <div
-            className={`space-y-4 ${loading || !imageLoaded ? "hidden" : ""}`}
+            className={`space-y-4 ${propLoading || !imageLoaded ? "hidden" : ""}`}
           >
             <div className="relative w-full aspect-[4/3] overflow-hidden rounded-lg">
               <Image
@@ -80,6 +49,7 @@ export default function PhotoContent() {
                 priority
                 onLoad={handleImageLoad}
                 onError={handleImageError}
+                sizes="(max-width: 768px) 100vw, (min-width: 769px) 50vw"
               />
             </div>
             <div className="space-y-2">
@@ -88,7 +58,7 @@ export default function PhotoContent() {
           </div>
         )}
 
-        {!photo && !loading && (
+        {!photo && !propLoading && (
           <div className="flex items-center justify-center h-96">
             <p className="text-lg text-gray-500">Failed to load photo</p>
           </div>

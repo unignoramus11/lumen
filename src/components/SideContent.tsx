@@ -1,59 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useLoading } from "../contexts/LoadingContext";
+import type { Poem, Joke } from "../types";
 
-interface Poem {
-  title: string;
-  author: string;
-  lines: string[];
-  linecount: string;
+interface SideContentProps {
+  poem?: Poem;
+  joke?: Joke;
+  loading?: boolean;
 }
 
-interface JokeSingle {
-  type: "single";
-  joke: string;
-}
+export default function SideContent({ poem, joke, loading = false }: SideContentProps) {
 
-interface JokeTwoPart {
-  type: "twopart";
-  setup: string;
-  delivery: string;
-}
-
-type Joke = JokeSingle | JokeTwoPart;
-
-export default function SideContent() {
-  const [poem, setPoem] = useState<Poem | null>(null);
-  const [joke, setJoke] = useState<Joke | null>(null);
-  const [loading, setLoading] = useState(true);
-  const { setComponentLoading } = useLoading();
-
-  useEffect(() => {
-    setComponentLoading("sideContent", true);
-
-    const fetchContent = async () => {
-      try {
-        // Fetch poem from our API route
-        const poemResponse = await fetch("/api/poem");
-        const poemData = await poemResponse.json();
-        setPoem(poemData);
-
-        // Fetch joke from our API route
-        const jokeResponse = await fetch("/api/joke");
-        const jokeData = await jokeResponse.json();
-        setJoke(jokeData);
-      } catch (error) {
-        console.error("Error fetching content:", error);
-      } finally {
-        setLoading(false);
-        setComponentLoading("sideContent", false);
-      }
-    };
-
-    fetchContent();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // setComponentLoading is stable with useCallback
 
   {
     /* get it? Light – Lumen haha I am a friggin genius */
