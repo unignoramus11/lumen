@@ -7,6 +7,8 @@ import BanterLoader from "../components/BanterLoader";
 import NewspaperDatePicker from "../components/NewspaperDatePicker";
 import PhotoContent from "../components/PhotoContent";
 import SideContent from "../components/SideContent";
+import Facts from "../components/Facts";
+import Todo from "../components/Todo";
 
 export default function Home() {
   const [isMobile, setIsMobile] = useState(false);
@@ -148,6 +150,22 @@ export default function Home() {
           </div>
         </div>
       </main>
+
+      {/* Comic Strip Section */}
+      <section className="max-w-6xl mx-auto px-8 py-8">
+        <div className="border-t-2 border-b-2 border-black py-8 text-center">
+          <h2 className="text-2xl font-bold mb-6">Daily Comic Strip</h2>
+          <div className="bg-gray-100 h-60 flex items-center justify-center text-gray-600">
+            <p>Did someone say garfield?</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Facts Component */}
+      <Facts />
+
+      {/* Todo Section */}
+      <Todo />
     </div>
   );
 }
