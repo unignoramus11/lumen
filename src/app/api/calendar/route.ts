@@ -71,11 +71,14 @@ export async function GET(request: NextRequest) {
           }
         );
 
+        console.log(`Fetching data for ${dateString}: ${response.status}`);
+
         if (response.ok) {
           const dailyData = await response.json();
+          console.log(`Data for ${dateString}:`, dailyData);
           calendarData[dateString] = {
-            imageUrl: dailyData.photo?.imageUrl || null,
-            label: dailyData.photo?.label || dateString,
+            imageUrl: dailyData?.photo?.imageUrl || null,
+            label: dailyData?.photo?.label || dateString,
           };
         } else {
           // No data available for this date
