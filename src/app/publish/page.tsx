@@ -11,6 +11,12 @@ interface PublishData {
   label: string;
 }
 
+interface ToastData {
+  message: string;
+  type: "success" | "error";
+  visible: boolean;
+}
+
 export default function PublishPage() {
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
@@ -24,6 +30,11 @@ export default function PublishPage() {
     label: "",
   });
   const [isEditing, setIsEditing] = useState(false);
+  const [toast, setToast] = useState<ToastData>({
+    message: "",
+    type: "success",
+    visible: false,
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -54,6 +65,13 @@ export default function PublishPage() {
       window.removeEventListener("resize", checkDevice);
     };
   }, []);
+
+  const showToast = (message: string, type: "success" | "error") => {
+    setToast({ message, type, visible: true });
+    setTimeout(() => {
+      setToast((prev) => ({ ...prev, visible: false }));
+    }, 4000);
+  };
 
   const loadExistingData = async () => {
     setLoading(true);
@@ -103,11 +121,11 @@ export default function PublishPage() {
         setIsAuthenticated(true);
         loadExistingData();
       } else {
-        alert("Invalid password");
+        showToast("Invalid administrator credentials", "error");
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert("Login failed");
+      showToast("Authentication failed - please try again", "error");
     }
 
     setLoading(false);
@@ -177,9 +195,10 @@ export default function PublishPage() {
       try {
         const compressedFile = await compressImage(file);
         setPublishData((prev) => ({ ...prev, photo: compressedFile }));
+        showToast("Photograph processed successfully", "success");
       } catch (error) {
         console.error("Error compressing image:", error);
-        alert("Error processing image");
+        showToast("Error processing photograph - please try again", "error");
       }
       setLoading(false);
     }
@@ -216,19 +235,20 @@ export default function PublishPage() {
       });
 
       if (response.ok) {
-        alert(
-          isEditing
-            ? "Content updated successfully!"
-            : "Content published successfully!"
-        );
-        router.push("/");
+        const successMessage = isEditing
+          ? "Edition updated successfully!"
+          : "Edition published successfully!";
+        showToast(successMessage, "success");
+
+        // Refresh the content instead of redirecting
+        await loadExistingData();
       } else {
         const error = await response.json();
-        alert(error.message || "Failed to publish");
+        showToast(error.message || "Failed to publish edition", "error");
       }
     } catch (error) {
       console.error("Publish error:", error);
-      alert("Failed to publish content");
+      showToast("Failed to publish content - please try again", "error");
     }
 
     setLoading(false);
@@ -352,6 +372,29 @@ export default function PublishPage() {
           <BanterLoader />
         </div>
       )}
+
+      {/* Toast Notification */}
+      {toast.visible && (
+        <div className="fixed top-8 left-1/2 transform -translate-x-1/2 z-40 max-w-md">
+          <div
+            className={`border-4 p-4 font-newsreader ${
+              toast.type === "success"
+                ? "border-black bg-white text-black"
+                : "border-black bg-black text-white"
+            }`}
+          >
+            <div className="text-center">
+              <div className="text-xs uppercase tracking-widest mb-1">
+                {toast.type === "success"
+                  ? "EDITORIAL SUCCESS"
+                  : "EDITORIAL ERROR"}
+              </div>
+              <div className="font-bold text-sm">{toast.message}</div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Newspaper Header */}
       <header className="py-8 select-none">
         <div className="max-w-6xl mx-auto px-8">
