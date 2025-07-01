@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
 import BanterLoader from "../components/BanterLoader";
 import NewspaperDatePicker from "../components/NewspaperDatePicker";
 import PhotoContent from "../components/PhotoContent";
@@ -16,6 +16,7 @@ import type { DailyData } from "../types";
 
 function HomePage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isMobile, setIsMobile] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [dailyData, setDailyData] = useState<DailyData | null>(null);
@@ -61,13 +62,26 @@ function HomePage() {
     checkDevice();
     window.addEventListener("resize", checkDevice);
 
+    // Check for date parameter in URL
+    const dateParam = searchParams.get("date");
+    if (dateParam) {
+      try {
+        const parsedDate = new Date(dateParam);
+        if (!isNaN(parsedDate.getTime())) {
+          setSelectedDate(parsedDate);
+        }
+      } catch {
+        console.error("Invalid date parameter:", dateParam);
+      }
+    }
+
     return () => {
       window.removeEventListener("resize", checkDevice);
       if (tapTimer) {
         clearTimeout(tapTimer);
       }
     };
-  }, [tapTimer]);
+  }, [tapTimer, searchParams]);
 
   useEffect(() => {
     if (isClient && !isMobile) {
@@ -237,5 +251,9 @@ function HomePage() {
 }
 
 export default function Home() {
-  return <HomePage />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HomePage />
+    </Suspense>
+  );
 }
