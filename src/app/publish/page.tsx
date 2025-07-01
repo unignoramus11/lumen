@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
+import BanterLoader from "../../components/BanterLoader";
 
 interface PublishData {
   headline: string;
@@ -55,6 +56,7 @@ export default function PublishPage() {
   }, []);
 
   const loadExistingData = async () => {
+    setLoading(true);
     try {
       // Get today's date in IST
       const today = new Date().toLocaleDateString("en-CA", {
@@ -73,6 +75,8 @@ export default function PublishPage() {
       }
     } catch (error) {
       console.error("Error loading existing data:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -341,7 +345,13 @@ export default function PublishPage() {
 
   // Publish form
   return (
-    <div className="min-h-screen bg-white text-black font-newsreader">
+    <div className="relative min-h-screen bg-white text-black font-newsreader">
+      {/* Loading Overlay */}
+      {loading && (
+        <div className="fixed inset-0 bg-white bg-opacity-95 z-50 flex items-center justify-center">
+          <BanterLoader />
+        </div>
+      )}
       {/* Newspaper Header */}
       <header className="py-8 select-none">
         <div className="max-w-6xl mx-auto px-8">

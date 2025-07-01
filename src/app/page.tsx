@@ -21,25 +21,34 @@ function HomePage() {
   const [dailyData, setDailyData] = useState<DailyData | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout | null>(
-    null
-  );
+  const [tapCount, setTapCount] = useState(0);
+  const [tapTimer, setTapTimer] = useState<NodeJS.Timeout | null>(null);
 
-  const handleLongPressStart = (e: React.TouchEvent | React.MouseEvent) => {
+  const handleTap = (e: React.TouchEvent | React.MouseEvent) => {
     e.preventDefault();
     if (isMobile) {
-      const timer = setTimeout(() => {
-        router.push("/publish");
-      }, 3000);
-      setLongPressTimer(timer);
-    }
-  };
+      const newTapCount = tapCount + 1;
+      setTapCount(newTapCount);
 
-  const handleLongPressEnd = (e: React.TouchEvent | React.MouseEvent) => {
-    e.preventDefault();
-    if (longPressTimer) {
-      clearTimeout(longPressTimer);
-      setLongPressTimer(null);
+      // Clear existing timer
+      if (tapTimer) {
+        clearTimeout(tapTimer);
+      }
+
+      // Check if we've reached 3 taps
+      if (newTapCount === 3) {
+        router.push("/publish");
+        setTapCount(0);
+        setTapTimer(null);
+        return;
+      }
+
+      // Set timer to reset tap count after 5 seconds
+      const timer = setTimeout(() => {
+        setTapCount(0);
+        setTapTimer(null);
+      }, 5000);
+      setTapTimer(timer);
     }
   };
 
@@ -54,11 +63,11 @@ function HomePage() {
 
     return () => {
       window.removeEventListener("resize", checkDevice);
-      if (longPressTimer) {
-        clearTimeout(longPressTimer);
+      if (tapTimer) {
+        clearTimeout(tapTimer);
       }
     };
-  }, [longPressTimer]);
+  }, [tapTimer]);
 
   useEffect(() => {
     if (isClient && !isMobile) {
@@ -89,12 +98,8 @@ function HomePage() {
             width={128}
             height={128}
             priority
-            onTouchStart={handleLongPressStart}
-            onTouchEnd={handleLongPressEnd}
-            onTouchCancel={handleLongPressEnd}
-            onMouseDown={handleLongPressStart}
-            onMouseUp={handleLongPressEnd}
-            onMouseLeave={handleLongPressEnd}
+            onTouchEnd={handleTap}
+            onClick={handleTap}
           />
           <h1 className="text-3xl font-bold mb-4 font-unifraktur">
             Lumen Sigma
