@@ -1,12 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useLoading } from "../contexts/LoadingContext";
 
 export default function Todo() {
   const [activity, setActivity] = useState<string>("");
   const [loading, setLoading] = useState(true);
+  const { setComponentLoading } = useLoading();
 
   useEffect(() => {
+    setComponentLoading("todo", true);
+
     const fetchActivity = async () => {
       try {
         const response = await fetch("/api/activity");
@@ -17,11 +21,13 @@ export default function Todo() {
         setActivity("take a moment to breathe and relax");
       } finally {
         setLoading(false);
+        setComponentLoading("todo", false);
       }
     };
 
     fetchActivity();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // setComponentLoading is stable with useCallback
 
   return (
     <div className="max-w-6xl mx-auto px-8 py-8 text-center">

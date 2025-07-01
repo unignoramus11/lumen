@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useLoading } from "../contexts/LoadingContext";
 
 interface Poem {
   title: string;
@@ -26,8 +27,11 @@ export default function SideContent() {
   const [poem, setPoem] = useState<Poem | null>(null);
   const [joke, setJoke] = useState<Joke | null>(null);
   const [loading, setLoading] = useState(true);
+  const { setComponentLoading } = useLoading();
 
   useEffect(() => {
+    setComponentLoading("sideContent", true);
+
     const fetchContent = async () => {
       try {
         // Fetch poem from our API route
@@ -43,11 +47,13 @@ export default function SideContent() {
         console.error("Error fetching content:", error);
       } finally {
         setLoading(false);
+        setComponentLoading("sideContent", false);
       }
     };
 
     fetchContent();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // setComponentLoading is stable with useCallback
 
   {
     /* get it? Light – Lumen haha I am a friggin genius */

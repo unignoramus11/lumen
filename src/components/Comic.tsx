@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useLoading } from "../contexts/LoadingContext";
 
 interface ComicData {
   imageUrl: string | null;
@@ -13,8 +14,11 @@ interface ComicData {
 export default function Comic() {
   const [comic, setComic] = useState<ComicData | null>(null);
   const [loading, setLoading] = useState(true);
+  const { setComponentLoading } = useLoading();
 
   useEffect(() => {
+    setComponentLoading("comic", true);
+
     const fetchComic = async () => {
       try {
         const response = await fetch("/api/comic");
@@ -30,11 +34,13 @@ export default function Comic() {
         });
       } finally {
         setLoading(false);
+        setComponentLoading("comic", false);
       }
     };
 
     fetchComic();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // setComponentLoading is stable with useCallback
 
   return (
     <div className="max-w-6xl mx-auto px-8 py-8">

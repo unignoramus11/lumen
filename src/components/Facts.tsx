@@ -1,14 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useLoading } from "../contexts/LoadingContext";
 
 export default function Facts() {
   const [catFact, setCatFact] = useState<string>("");
   const [triviaFact, setTriviaFact] = useState<string>("");
   const [dogFact, setDogFact] = useState<string>("");
   const [loading, setLoading] = useState(true);
+  const { setComponentLoading } = useLoading();
 
   useEffect(() => {
+    setComponentLoading("facts", true);
+
     const fetchFacts = async () => {
       try {
         // Fetch all facts in parallel
@@ -41,11 +45,13 @@ export default function Facts() {
         );
       } finally {
         setLoading(false);
+        setComponentLoading("facts", false);
       }
     };
 
     fetchFacts();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // setComponentLoading is stable with useCallback
 
   return (
     <div className="max-w-6xl mx-auto px-8 py-8">

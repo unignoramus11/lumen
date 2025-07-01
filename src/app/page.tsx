@@ -10,10 +10,11 @@ import SideContent from "../components/SideContent";
 import Facts from "../components/Facts";
 import Todo from "../components/Todo";
 import Comic from "../components/Comic";
+import { LoadingProvider, useLoading } from "../contexts/LoadingContext";
 
-export default function Home() {
+function HomePage() {
   const [isMobile, setIsMobile] = useState(false);
-  const [logoLoaded, setLogoLoaded] = useState(false);
+  const { allLoaded } = useLoading();
 
   useEffect(() => {
     const checkDevice = () => {
@@ -28,36 +29,8 @@ export default function Home() {
     };
   }, []);
 
-  const handleLogoLoad = () => {
-    if (!logoLoaded) {
-      // Add a small delay to prevent flash
-      setTimeout(() => {
-        setLogoLoaded(true);
-      }, 1000);
-    }
-  };
-
-  // Show loading screen while logo hasn't loaded yet
-  if (!logoLoaded) {
-    return (
-      <>
-        {/* Hidden images to trigger loading */}
-        <div style={{ position: "absolute", left: "-9999px", top: "-9999px" }}>
-          <Image
-            src="/logo.png"
-            alt="Lumen Sigma Logo"
-            width={128}
-            height={128}
-            priority
-            onLoad={handleLogoLoad}
-          />
-        </div>
-        <div className="min-h-screen bg-white text-black flex items-center justify-center">
-          <BanterLoader />
-        </div>
-      </>
-    );
-  }
+  // Show loading overlay while APIs are still loading
+  const isLoading = !allLoaded;
 
   if (isMobile) {
     return (
@@ -85,7 +58,13 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-white text-black font-newsreader">
+    <div className="relative min-h-screen bg-white text-black font-newsreader">
+      {/* Loading Overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-white bg-opacity-95 z-50 flex items-center justify-center">
+          <BanterLoader />
+        </div>
+      )}
       {/* Newspaper Header */}
       <header className="py-8 select-none">
         <div className="max-w-6xl mx-auto px-8">
@@ -97,7 +76,7 @@ export default function Home() {
                   ESTABLISHED 2025
                 </span>
                 <span className="px-2 py-1 rounded justify-self-center">
-                  DAILY
+                  DAILY(?)
                 </span>
                 <div className="justify-self-end">
                   <NewspaperDatePicker />
@@ -161,5 +140,13 @@ export default function Home() {
       {/* Todo Section */}
       <Todo />
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <LoadingProvider>
+      <HomePage />
+    </LoadingProvider>
   );
 }

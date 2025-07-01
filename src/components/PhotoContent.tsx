@@ -10,7 +10,7 @@ export default function PhotoContent() {
         {/* Placeholder content */}
         <div>
           <p className="text-lg leading-relaxed">
-            This is where the photos with short labels will reside.
+            This is where the photo and its label will reside.
           </p>
         </div>
       </div>
