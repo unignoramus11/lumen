@@ -298,6 +298,28 @@ export default function PublishPage() {
   if (!isAuthenticated && !initialLoading) {
     return (
       <div className="min-h-screen bg-white text-black font-newsreader">
+        {/* Toast Notification */}
+        {toast.visible && (
+          <div className="fixed top-8 left-1/2 transform -translate-x-1/2 z-40 max-w-md">
+            <div
+              className={`border-4 p-4 font-newsreader ${
+                toast.type === "success"
+                  ? "border-black bg-white text-black"
+                  : "border-black bg-black text-white"
+              }`}
+            >
+              <div className="text-center">
+                <div className="text-xs uppercase tracking-widest mb-1">
+                  {toast.type === "success"
+                    ? "SUCCESS"
+                    : "ERROR"}
+                </div>
+                <div className="font-bold text-sm">{toast.message}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Newspaper Header */}
         <header className="py-8 select-none">
           <div className="max-w-6xl mx-auto px-8">
@@ -395,8 +417,8 @@ export default function PublishPage() {
             <div className="text-center">
               <div className="text-xs uppercase tracking-widest mb-1">
                 {toast.type === "success"
-                  ? "EDITORIAL SUCCESS"
-                  : "EDITORIAL ERROR"}
+                  ? "SUCCESS"
+                  : "ERROR"}
               </div>
               <div className="font-bold text-sm">{toast.message}</div>
             </div>
@@ -570,7 +592,11 @@ export default function PublishPage() {
                   disabled={loading}
                   className="p-4 border-2 border-black bg-black text-white font-bold uppercase tracking-wide disabled:opacity-50 hover:bg-white hover:text-black transition-colors font-newsreader w-full"
                 >
-                  {loading ? "PUBLISHING..." : isEditing ? "UPDATE" : "PUBLISH"}
+                  {loading
+                    ? "PUBLISHING..."
+                    : isEditing
+                    ? "UPDATE EDITION"
+                    : "PUBLISH EDITION"}
                 </button>
               </div>
             </form>
