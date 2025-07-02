@@ -21,6 +21,7 @@ function HomePage() {
   const [isClient, setIsClient] = useState(false);
   const [dailyData, setDailyData] = useState<DailyData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [tapCount, setTapCount] = useState(0);
   const [tapTimer, setTapTimer] = useState<NodeJS.Timeout | null>(null);
@@ -62,6 +63,11 @@ function HomePage() {
     checkDevice();
     window.addEventListener("resize", checkDevice);
 
+    // Show loading for at least 500ms to prevent flashing screens
+    const minimumLoadingTimer = setTimeout(() => {
+      setInitialLoading(false);
+    }, 500);
+
     // Check for date parameter in URL
     const dateParam = searchParams.get("date");
     if (dateParam) {
@@ -77,6 +83,7 @@ function HomePage() {
 
     return () => {
       window.removeEventListener("resize", checkDevice);
+      clearTimeout(minimumLoadingTimer);
       if (tapTimer) {
         clearTimeout(tapTimer);
       }
@@ -97,11 +104,11 @@ function HomePage() {
     }
   }, [selectedDate, isClient, isMobile]);
 
-  // Show loading overlay while data is loading (only for desktop)
-  const isLoading = !isMobile && loading;
+  // Show loading overlay while data is loading or during initial load
+  const isLoading = (!isMobile && loading) || initialLoading;
 
   // Early return for mobile devices to prevent loading any content components
-  if (isClient && isMobile) {
+  if (isClient && isMobile && !initialLoading) {
     return (
       <div className="min-h-screen bg-white text-black flex items-center justify-center p-8">
         <div className="text-center max-w-md">
@@ -129,8 +136,12 @@ function HomePage() {
   }
 
   // Show nothing during SSR or initial client render to prevent hydration mismatch
-  if (!isClient) {
-    return null;
+  if (!isClient || initialLoading) {
+    return (
+      <div className="fixed inset-0 bg-white bg-opacity-95 z-50 flex items-center justify-center">
+        <BanterLoader />
+      </div>
+    );
   }
 
   return (

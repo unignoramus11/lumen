@@ -66,6 +66,7 @@ export default function CalendarPage() {
   const [isClient, setIsClient] = useState(false);
   const [calendarData, setCalendarData] = useState<CalendarData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   const [tapCount, setTapCount] = useState(0);
@@ -130,8 +131,14 @@ export default function CalendarPage() {
     checkDevice();
     window.addEventListener("resize", checkDevice);
 
+    // Show loading for at least 500ms to prevent flashing screens
+    const minimumLoadingTimer = setTimeout(() => {
+      setInitialLoading(false);
+    }, 500);
+
     return () => {
       window.removeEventListener("resize", checkDevice);
+      clearTimeout(minimumLoadingTimer);
       if (tapTimer) {
         clearTimeout(tapTimer);
       }
@@ -281,7 +288,7 @@ export default function CalendarPage() {
   };
 
   // Early return for mobile devices to prevent loading any content components
-  if (isClient && isMobile) {
+  if (isClient && isMobile && !initialLoading) {
     return (
       <div className="min-h-screen bg-white text-black flex items-center justify-center p-8">
         <div className="text-center max-w-md">
@@ -309,14 +316,18 @@ export default function CalendarPage() {
   }
 
   // Show nothing during SSR or initial client render to prevent hydration mismatch
-  if (!isClient) {
-    return null;
+  if (!isClient || initialLoading) {
+    return (
+      <div className="fixed inset-0 bg-white bg-opacity-95 z-50 flex items-center justify-center">
+        <BanterLoader />
+      </div>
+    );
   }
 
   const isLoadingComplete = !loading && imagesLoaded;
 
-  // Show loading overlay while data is loading (only for desktop)
-  const isLoading = !isMobile && loading;
+  // Show loading overlay while data is loading or during initial load
+  const isLoading = (!isMobile && loading) || initialLoading;
 
   return (
     <div className="relative min-h-screen bg-white text-black font-newsreader">

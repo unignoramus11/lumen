@@ -20,6 +20,7 @@ interface ToastData {
 export default function PublishPage() {
   const [isMobile, setIsMobile] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -45,6 +46,11 @@ export default function PublishPage() {
     checkDevice();
     window.addEventListener("resize", checkDevice);
 
+    // Show loading for at least 500ms to prevent flashing screens
+    const minimumLoadingTimer = setTimeout(() => {
+      setInitialLoading(false);
+    }, 500);
+
     // Check if already authenticated
     const authToken = localStorage.getItem("admin_auth");
     if (authToken) {
@@ -62,6 +68,7 @@ export default function PublishPage() {
 
     return () => {
       window.removeEventListener("resize", checkDevice);
+      clearTimeout(minimumLoadingTimer);
     };
   }, []);
 
@@ -253,9 +260,13 @@ export default function PublishPage() {
     setLoading(false);
   };
 
-  // Show nothing during SSR
-  if (!isClient) {
-    return null;
+  // Show nothing during SSR or initial loading
+  if (!isClient || initialLoading) {
+    return (
+      <div className="fixed inset-0 bg-white bg-opacity-95 z-50 flex items-center justify-center">
+        <BanterLoader />
+      </div>
+    );
   }
 
   // Block desktop users
@@ -366,7 +377,7 @@ export default function PublishPage() {
   return (
     <div className="relative min-h-screen bg-white text-black font-newsreader">
       {/* Loading Overlay */}
-      {loading && (
+      {(loading || initialLoading) && (
         <div className="fixed inset-0 bg-white bg-opacity-95 z-50 flex items-center justify-center">
           <BanterLoader />
         </div>
