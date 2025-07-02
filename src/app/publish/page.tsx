@@ -451,9 +451,6 @@ export default function PublishPage() {
             <h2 className="text-4xl font-bold text-center font-newsreader">
               {isEditing ? "EDIT TODAY'S EDITION" : "PUBLISH TODAY'S EDITION"}
             </h2>
-            <p className="text-center text-lg mt-2 font-newsreader">
-              {formatISTDate(new Date())}
-            </p>
           </div>
 
           {/* Form Content */}
@@ -573,11 +570,7 @@ export default function PublishPage() {
                   disabled={loading}
                   className="p-4 border-2 border-black bg-black text-white font-bold uppercase tracking-wide disabled:opacity-50 hover:bg-white hover:text-black transition-colors font-newsreader w-full"
                 >
-                  {loading
-                    ? "PUBLISHING..."
-                    : isEditing
-                    ? "UPDATE EDITION"
-                    : "PUBLISH EDITION"}
+                  {loading ? "PUBLISHING..." : isEditing ? "UPDATE" : "PUBLISH"}
                 </button>
               </div>
             </form>
