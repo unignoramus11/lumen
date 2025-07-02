@@ -263,7 +263,13 @@ function HomePage() {
 
 export default function Home() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className="fixed inset-0 bg-white bg-opacity-95 z-50 flex items-center justify-center">
+          <BanterLoader />
+        </div>
+      }
+    >
       <HomePage />
     </Suspense>
   );
