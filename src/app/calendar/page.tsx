@@ -287,8 +287,16 @@ export default function CalendarPage() {
     return days;
   };
 
+  // Show loading overlay while data is loading or during initial load or if images are not loaded yet
+  const isLoading = loading || initialLoading || !imagesLoaded;
+
+  // Show nothing during SSR or initial client render to prevent hydration mismatch
+  if (!isClient) {
+    return null;
+  }
+
   // Early return for mobile devices to prevent loading any content components
-  if (isClient && isMobile && !initialLoading) {
+  if (isMobile && !initialLoading) {
     return (
       <div className="min-h-screen bg-white text-black flex items-center justify-center p-8">
         <div className="text-center max-w-md">
@@ -315,24 +323,10 @@ export default function CalendarPage() {
     );
   }
 
-  // Show nothing during SSR or initial client render to prevent hydration mismatch
-  if (!isClient || initialLoading) {
-    return (
-      <div className="fixed inset-0 bg-white bg-opacity-95 z-50 flex items-center justify-center">
-        <BanterLoader />
-      </div>
-    );
-  }
-
-  const isLoadingComplete = !loading && imagesLoaded;
-
-  // Show loading overlay while data is loading or during initial load
-  const isLoading = (!isMobile && loading) || initialLoading;
-
   return (
     <div className="relative min-h-screen bg-white text-black font-newsreader">
       {/* Loading Overlay */}
-      {isLoading && !isLoadingComplete && (
+      {isLoading && (
         <div className="fixed inset-0 bg-white bg-opacity-95 z-50 flex items-center justify-center">
           <BanterLoader />
         </div>

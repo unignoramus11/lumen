@@ -105,10 +105,15 @@ function HomePage() {
   }, [selectedDate, isClient, isMobile]);
 
   // Show loading overlay while data is loading or during initial load
-  const isLoading = (!isMobile && loading) || initialLoading;
+  const isLoading = loading || initialLoading;
+
+  // Show nothing during SSR or initial client render to prevent hydration mismatch
+  if (!isClient) {
+    return null;
+  }
 
   // Early return for mobile devices to prevent loading any content components
-  if (isClient && isMobile && !initialLoading) {
+  if (isMobile && !initialLoading) {
     return (
       <div className="min-h-screen bg-white text-black flex items-center justify-center p-8">
         <div className="text-center max-w-md">
@@ -131,15 +136,6 @@ function HomePage() {
             Mostly because I am lazy :P
           </p>
         </div>
-      </div>
-    );
-  }
-
-  // Show nothing during SSR or initial client render to prevent hydration mismatch
-  if (!isClient || initialLoading) {
-    return (
-      <div className="fixed inset-0 bg-white bg-opacity-95 z-50 flex items-center justify-center">
-        <BanterLoader />
       </div>
     );
   }

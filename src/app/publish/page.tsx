@@ -260,17 +260,16 @@ export default function PublishPage() {
     setLoading(false);
   };
 
+  // Show loading overlay while data is loading or during initial load
+  const isLoading = loading || initialLoading;
+
   // Show nothing during SSR or initial loading
-  if (!isClient || initialLoading) {
-    return (
-      <div className="fixed inset-0 bg-white bg-opacity-95 z-50 flex items-center justify-center">
-        <BanterLoader />
-      </div>
-    );
+  if (!isClient) {
+    return null;
   }
 
-  // Block desktop users
-  if (!isMobile) {
+  // Early return for desktop devices to prevent loading any content components
+  if (!isMobile && !initialLoading) {
     return (
       <div className="min-h-screen bg-white text-black flex items-center justify-center p-8">
         <div className="text-center max-w-md">
@@ -296,7 +295,7 @@ export default function PublishPage() {
   }
 
   // Login form
-  if (!isAuthenticated) {
+  if (!isAuthenticated && !initialLoading) {
     return (
       <div className="min-h-screen bg-white text-black font-newsreader">
         {/* Newspaper Header */}
@@ -377,7 +376,7 @@ export default function PublishPage() {
   return (
     <div className="relative min-h-screen bg-white text-black font-newsreader">
       {/* Loading Overlay */}
-      {(loading || initialLoading) && (
+      {isLoading && (
         <div className="fixed inset-0 bg-white bg-opacity-95 z-50 flex items-center justify-center">
           <BanterLoader />
         </div>
