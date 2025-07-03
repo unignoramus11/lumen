@@ -1,16 +1,32 @@
-"use client"
+"use client";
 
-import * as React from "react"
+/**
+ * @file This file defines a customizable Calendar component built on top of `react-day-picker`.
+ * It provides a flexible and accessible date picker with various styling and functionality options.
+ */
+
+import * as React from "react";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-} from "lucide-react"
-import { DayButton, DayPicker, getDefaultClassNames } from "react-day-picker"
+} from "lucide-react";
+import { DayButton, DayPicker, getDefaultClassNames } from "react-day-picker";
 
-import { cn } from "@/lib/utils"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Button, buttonVariants } from "@/components/ui/button";
 
+/**
+ * Props for the Calendar component.
+ * Extends `React.ComponentProps<typeof DayPicker>` to inherit all props from `react-day-picker`.
+ * @property {string} [className] - Additional CSS classes to apply to the root element of the calendar.
+ * @property {object} [classNames] - Custom class names to override default styles of `react-day-picker` elements.
+ * @property {boolean} [showOutsideDays=true] - Whether to show days outside the current month.
+ * @property {"label" | "dropdown"} [captionLayout="label"] - Layout for the month/year caption.
+ * @property {React.ComponentProps<typeof Button>["variant"]} [buttonVariant="ghost"] - Variant for navigation buttons.
+ * @property {object} [formatters] - Custom formatters for `react-day-picker`.
+ * @property {object} [components] - Custom components to override default `react-day-picker` components.
+ */
 function Calendar({
   className,
   classNames,
@@ -21,9 +37,9 @@ function Calendar({
   components,
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
-  buttonVariant?: React.ComponentProps<typeof Button>["variant"]
+  buttonVariant?: React.ComponentProps<typeof Button>["variant"];
 }) {
-  const defaultClassNames = getDefaultClassNames()
+  const defaultClassNames = getDefaultClassNames();
 
   return (
     <DayPicker
@@ -130,13 +146,13 @@ function Calendar({
               className={cn(className)}
               {...props}
             />
-          )
+          );
         },
         Chevron: ({ className, orientation, ...props }) => {
           if (orientation === "left") {
             return (
               <ChevronLeftIcon className={cn("size-4", className)} {...props} />
-            )
+            );
           }
 
           if (orientation === "right") {
@@ -145,12 +161,12 @@ function Calendar({
                 className={cn("size-4", className)}
                 {...props}
               />
-            )
+            );
           }
 
           return (
             <ChevronDownIcon className={cn("size-4", className)} {...props} />
-          )
+          );
         },
         DayButton: CalendarDayButton,
         WeekNumber: ({ children, ...props }) => {
@@ -160,27 +176,33 @@ function Calendar({
                 {children}
               </div>
             </td>
-          )
+          );
         },
         ...components,
       }}
       {...props}
     />
-  )
+  );
 }
 
+/**
+ * CalendarDayButton component is a custom button for individual days in the calendar.
+ * It extends `DayButton` from `react-day-picker` and applies custom styling and data attributes.
+ * @param {React.ComponentProps<typeof DayButton>} { className, day, modifiers, ...props } - Props for the DayButton component.
+ * @returns {JSX.Element} The rendered button for a calendar day.
+ */
 function CalendarDayButton({
   className,
   day,
   modifiers,
   ...props
 }: React.ComponentProps<typeof DayButton>) {
-  const defaultClassNames = getDefaultClassNames()
+  const defaultClassNames = getDefaultClassNames();
 
-  const ref = React.useRef<HTMLButtonElement>(null)
+  const ref = React.useRef<HTMLButtonElement>(null);
   React.useEffect(() => {
-    if (modifiers.focused) ref.current?.focus()
-  }, [modifiers.focused])
+    if (modifiers.focused) ref.current?.focus();
+  }, [modifiers.focused]);
 
   return (
     <Button
@@ -204,7 +226,7 @@ function CalendarDayButton({
       )}
       {...props}
     />
-  )
+  );
 }
 
-export { Calendar, CalendarDayButton }
+export { Calendar, CalendarDayButton };
