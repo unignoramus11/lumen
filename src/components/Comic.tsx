@@ -1,13 +1,29 @@
 "use client";
 
+/**
+ * @file This file defines the Comic component, which displays a daily comic strip.
+ * It fetches comic data and renders the image, providing a loading state and fallback for errors.
+ */
+
 import Image from "next/image";
 import type { ComicPanel } from "../types";
 
+/**
+ * Props for the Comic component.
+ * @property {ComicPanel} [comic] - The comic data to be displayed, including imageUrl and altText.
+ * @property {boolean} [loading=false] - Indicates if the comic data is currently being loaded.
+ */
 interface ComicProps {
   comic?: ComicPanel;
   loading?: boolean;
 }
 
+/**
+ * Comic component displays a single comic panel.
+ * It shows a loading indicator while fetching data and a fallback message if the comic cannot be loaded.
+ * @param {ComicProps} { comic, loading } - The props for the component.
+ * @returns {JSX.Element} The JSX for the Comic component.
+ */
 export default function Comic({ comic, loading = false }: ComicProps) {
   return (
     <div className="max-w-6xl mx-auto px-8 py-8">

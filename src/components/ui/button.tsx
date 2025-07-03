@@ -1,9 +1,20 @@
+/**
+ * @file This file defines a reusable Button component, built with Shadcn UI conventions.
+ * It leverages `class-variance-authority` (cva) for flexible styling based on variants and sizes,
+ * and `radix-ui/react-slot` for rendering as a different HTML element while retaining styles and behavior.
+ */
+
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
+/**
+ * Defines the base styles and variants for the button component using `cva`.
+ * This allows for a highly customizable button with different visual styles and sizes.
+ * @see https://www.npmjs.com/package/class-variance-authority
+ */
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
@@ -35,6 +46,20 @@ const buttonVariants = cva(
   }
 );
 
+/**
+ * Props for the Button component.
+ * Extends standard HTML button props and `VariantProps` from `buttonVariants`.
+ * @typedef {React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean; }} ButtonProps
+ */
+
+/**
+ * Renders a customizable button component.
+ * It supports different visual variants and sizes as defined by `buttonVariants`.
+ * The `asChild` prop allows the button to render as its child component, inheriting its props and ref,
+ * while still applying the button's styles.
+ * @param {ButtonProps} { className, variant, size, asChild, ...props } - The props for the Button component.
+ * @returns {JSX.Element} The rendered button element.
+ */
 function Button({
   className,
   variant,

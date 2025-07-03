@@ -1,40 +1,106 @@
 "use client";
 
+/**
+ * @file This file defines the PublishPage component, which serves as an administrative interface
+ * for publishing and editing daily content editions for the Lumen Sigma application.
+ * It includes authentication, image compression, and form handling for headlines, photos, and captions.
+ */
+
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 import BanterLoader from "../../components/BanterLoader";
 import { formatISTDate } from "@/lib/ist-utils";
 
+/**
+ * Interface defining the structure of data to be published.
+ * @property {string} headline - The main headline for the daily edition.
+ * @property {File | null} photo - The photo file to be uploaded, or null if no new photo is selected.
+ * @property {string} label - The caption or label for the uploaded photo.
+ */
 interface PublishData {
   headline: string;
   photo: File | null;
   label: string;
 }
 
+/**
+ * Interface defining the structure for toast notifications.
+ * @property {string} message - The message to be displayed in the toast.
+ * @property {"success" | "error"} type - The type of toast, determining its styling (success or error).
+ * @property {boolean} visible - A boolean indicating whether the toast is currently visible.
+ */
 interface ToastData {
   message: string;
   type: "success" | "error";
   visible: boolean;
 }
 
+/**
+ * PublishPage component provides the UI for administrators to publish or edit daily content.
+ * It handles user authentication, image processing, and interaction with the publishing API.
+ * @returns {JSX.Element} The PublishPage UI, including login form or content publishing form.
+ */
 export default function PublishPage() {
+  /**
+   * State to track if the device is mobile (screen width less than 1024px).
+   * The editor is designed for mobile devices.
+   * @type {boolean}
+   */
   const [isMobile, setIsMobile] = useState(false);
+  /**
+   * State to track if the component is running on the client-side.
+   * Used to prevent hydration mismatches during server-side rendering.
+   * @type {boolean}
+   */
   const [isClient, setIsClient] = useState(false);
+  /**
+   * State to indicate if the initial loading phase is active.
+   * Used to ensure a minimum loading time for a smoother user experience.
+   * @type {boolean}
+   */
   const [initialLoading, setInitialLoading] = useState(true);
+  /**
+   * State to track user authentication status.
+   * @type {boolean}
+   */
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  /**
+   * State to store the password entered by the user for authentication.
+   * @type {string}
+   */
   const [password, setPassword] = useState("");
+  /**
+   * State to indicate if an asynchronous operation (e.g., login, publish) is in progress.
+   * @type {boolean}
+   */
   const [loading, setLoading] = useState(false);
+  /**
+   * State to store the data for the current publication, including headline, photo, and label.
+   * @type {PublishData}
+   */
   const [publishData, setPublishData] = useState<PublishData>({
     headline: "",
     photo: null,
     label: "",
   });
+  /**
+   * State to indicate if the user is currently editing an existing daily edition.
+   * @type {boolean}
+   */
   const [isEditing, setIsEditing] = useState(false);
+  /**
+   * State to manage the display and content of toast notifications.
+   * @type {ToastData}
+   */
   const [toast, setToast] = useState<ToastData>({
     message: "",
     type: "success",
     visible: false,
   });
+  /**
+   * Ref for the hidden file input element, allowing programmatic click.
+   * @type {React.RefObject<HTMLInputElement>}
+   */
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -260,15 +326,24 @@ export default function PublishPage() {
     setLoading(false);
   };
 
-  // Show loading overlay while data is loading or during initial load
+  /**
+   * Determines if a loading overlay should be shown.
+   * True if `loading` (data fetching/submission) or `initialLoading` (minimum load time) is active.
+   * @type {boolean}
+   */
   const isLoading = loading || initialLoading;
 
-  // Show nothing during SSR or initial loading
+  // Render nothing during server-side rendering or initial client render to prevent hydration mismatches.
+  // This ensures the client-side rendering takes over smoothly.
   if (!isClient) {
     return null;
   }
 
-  // Early return for desktop devices to prevent loading any content components
+  /**
+   * Early return for desktop devices: displays a message indicating mobile-only access for the editor.
+   * This prevents unnecessary rendering of complex components on unsupported devices.
+   * @returns {JSX.Element}
+   */
   if (!isMobile && !initialLoading) {
     return (
       <div className="min-h-screen bg-[#eee5da] text-[#262424] flex items-center justify-center p-8">
@@ -294,11 +369,18 @@ export default function PublishPage() {
     );
   }
 
-  // Login form
+  /**
+   * Renders the login form if the user is not authenticated and initial loading is complete.
+   * @returns {JSX.Element}
+   */
+  /**
+   * Renders the login form if the user is not authenticated and initial loading is complete.
+   * @returns {JSX.Element} The login form UI.
+   */
   if (!isAuthenticated && !initialLoading) {
     return (
       <div className="min-h-screen bg-[#eee5da] text-[#262424] font-newsreader">
-        {/* Toast Notification */}
+        {/* Toast Notification: Displays success or error messages. */}
         {toast.visible && (
           <div className="fixed top-8 left-1/2 transform -translate-x-1/2 z-40 max-w-md">
             <div
@@ -318,7 +400,7 @@ export default function PublishPage() {
           </div>
         )}
 
-        {/* Newspaper Header */}
+        {/* Newspaper Header: Displays masthead for the editor login page. */}
         <header className="py-8 select-none">
           <div className="max-w-6xl mx-auto px-8">
             <div className="text-center">
@@ -358,6 +440,7 @@ export default function PublishPage() {
           </div>
         </header>
 
+        {/* Main Content Area: Contains the login form. */}
         <main className="max-w-2xl mx-auto p-8">
           <div className="border-2 border-[#262424] p-8 bg-[#eee5da]">
             <h2 className="text-3xl font-bold mb-6 text-center font-newsreader">
@@ -392,17 +475,20 @@ export default function PublishPage() {
     );
   }
 
-  // Publish form
+  /**
+   * Renders the publish form if the user is authenticated and initial loading is complete.
+   * @returns {JSX.Element} The publish/edit form UI.
+   */
   return (
     <div className="relative min-h-screen bg-[#eee5da] text-[#262424] font-newsreader">
-      {/* Loading Overlay */}
+      {/* Loading Overlay: Displays a loader while content is being processed or submitted. */}
       {isLoading && (
         <div className="fixed inset-0 bg-[#eee5da] bg-opacity-95 z-50 flex items-center justify-center">
           <BanterLoader />
         </div>
       )}
 
-      {/* Toast Notification */}
+      {/* Toast Notification: Displays success or error messages. */}
       {toast.visible && (
         <div className="fixed top-8 left-1/2 transform -translate-x-1/2 z-40 max-w-md">
           <div
@@ -422,7 +508,7 @@ export default function PublishPage() {
         </div>
       )}
 
-      {/* Newspaper Header */}
+      {/* Newspaper Header: Displays masthead for the editor panel. */}
       <header className="py-8 select-none">
         <div className="max-w-6xl mx-auto px-8">
           <div className="text-center">
@@ -462,19 +548,20 @@ export default function PublishPage() {
         </div>
       </header>
 
+      {/* Main Content Area: Contains the publish/edit form. */}
       <main className="max-w-4xl mx-auto p-8">
         <div className="border-4 border-[#262424] bg-[#eee5da]">
-          {/* Form Header */}
+          {/* Form Header: Displays the title for the publish/edit form. */}
           <div className="border-b-2 border-[#262424] p-6 bg-[#eee5da]">
             <h2 className="text-4xl font-bold text-center font-newsreader">
               {isEditing ? "EDIT TODAY'S EDITION" : "PUBLISH TODAY'S EDITION"}
             </h2>
           </div>
 
-          {/* Form Content */}
+          {/* Form Content: Contains input fields for headline, photo, and caption. */}
           <div className="p-8">
             <form onSubmit={handlePublish} className="space-y-8">
-              {/* Headline Section */}
+              {/* Headline Section: Input field for the main headline. */}
               <div className="border-2 border-[#262424] p-6">
                 <h3 className="text-xl font-bold mb-4 uppercase tracking-wide border-b border-[#262424] pb-2">
                   Main Headline
@@ -489,18 +576,17 @@ export default function PublishPage() {
                     }))
                   }
                   className="w-full p-4 border-2 border-[#262424] bg-[#eee5da] text-[#262424] focus:outline-none text-lg font-newsreader"
-                  placeholder="Enter today's headline"
                   required
                 />
               </div>
 
-              {/* Photo Section */}
+              {/* Photo Section: Input for uploading a featured photograph. */}
               <div className="border-2 border-[#262424] p-6">
                 <h3 className="text-xl font-bold mb-4 uppercase tracking-wide border-b border-[#262424] pb-2">
                   Featured Photograph
                 </h3>
 
-                {/* Custom Upload Button */}
+                {/* Custom Upload Button: Triggers the hidden file input. */}
                 <div className="space-y-4">
                   <button
                     type="button"
@@ -541,7 +627,7 @@ export default function PublishPage() {
                 </div>
               </div>
 
-              {/* Caption Section */}
+              {/* Caption Section: Textarea for entering the photograph's caption. */}
               <div className="border-2 border-[#262424] p-6">
                 <h3 className="text-xl font-bold mb-4 uppercase tracking-wide border-b border-[#262424] pb-2">
                   Photograph Caption
@@ -560,7 +646,7 @@ export default function PublishPage() {
                 />
               </div>
 
-              {/* Information Box */}
+              {/* Information Box: Provides editorial notes and guidelines. */}
               <div className="border-2 border-[#262424] p-6 bg-[#ffdbc7]">
                 <h3 className="text-lg font-bold mb-3 uppercase tracking-wide">
                   Editorial Notes
@@ -581,7 +667,7 @@ export default function PublishPage() {
                 </div>
               </div>
 
-              {/* Action Button */}
+              {/* Action Button: Submits the form to publish or update the edition. */}
               <div className="flex w-full">
                 <button
                   type="submit"
