@@ -9,7 +9,10 @@ interface PhotoContentProps {
   loading?: boolean;
 }
 
-export default function PhotoContent({ photo, loading: propLoading = false }: PhotoContentProps) {
+export default function PhotoContent({
+  photo,
+  loading: propLoading = false,
+}: PhotoContentProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   // Reset image loaded state when photo changes
@@ -38,14 +41,16 @@ export default function PhotoContent({ photo, loading: propLoading = false }: Ph
 
         {photo && (
           <div
-            className={`space-y-4 ${propLoading || !imageLoaded ? "hidden" : ""}`}
+            className={`space-y-4 ${
+              propLoading || !imageLoaded ? "hidden" : ""
+            }`}
           >
             <div className="relative w-full aspect-[4/3] overflow-hidden rounded-lg">
               <Image
                 src={photo.imageUrl}
                 alt={photo.label}
                 fill
-                className="object-cover object-center"
+                className="object-cover object-center mix-blend-multiply"
                 priority
                 onLoad={handleImageLoad}
                 onError={handleImageError}
@@ -60,7 +65,7 @@ export default function PhotoContent({ photo, loading: propLoading = false }: Ph
 
         {!photo && !propLoading && (
           <div className="flex items-center justify-center h-96">
-            <p className="text-lg text-gray-500">Failed to load photo</p>
+            <p className="text-lg text-[#262424]">Failed to load photo</p>
           </div>
         )}
       </div>

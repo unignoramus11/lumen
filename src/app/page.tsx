@@ -119,7 +119,7 @@ function HomePage() {
   // Early return for mobile devices to prevent loading any content components
   if (isMobile && !initialLoading) {
     return (
-      <div className="min-h-screen bg-white text-black flex items-center justify-center p-8">
+      <div className="min-h-screen bg-[#eee5da] text-[#262424] flex items-center justify-center p-8">
         <div className="text-center max-w-md">
           <Image
             src="/logo.png"
@@ -145,10 +145,10 @@ function HomePage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-white text-black font-newsreader">
+    <div className="relative min-h-screen bg-[#eee5da] text-[#262424] font-newsreader">
       {/* Loading Overlay */}
       {isLoading && (
-        <div className="fixed inset-0 bg-white bg-opacity-95 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-[#eee5da] bg-opacity-95 z-50 flex items-center justify-center">
           <BanterLoader />
         </div>
       )}
@@ -157,7 +157,7 @@ function HomePage() {
         <div className="max-w-6xl mx-auto px-8">
           {/* Newspaper Masthead */}
           <div className="text-center">
-            <div className="border-t-2 border-b-2 border-black py-2 mb-4">
+            <div className="border-t-2 border-b-2 border-[#262424] py-2 mb-4">
               <div className="grid grid-cols-3 items-center text-sm">
                 <span className="px-2 py-1 rounded justify-self-start">
                   ESTABLISHED 2025
@@ -189,7 +189,7 @@ function HomePage() {
             </h1>
 
             {/* Subtitle/Tagline */}
-            <div className="border-t-2 border-b-2 border-black py-2">
+            <div className="border-t-2 border-b-2 border-[#262424] py-2">
               A HOBBY PROJECT BY&nbsp;
               <Link
                 href="https://github.com/unignoramus11/lumen"
@@ -224,7 +224,7 @@ function HomePage() {
               </div>
 
               {/* Vertical separator line */}
-              <div className="border-l border-black"></div>
+              <div className="border-l border-[#262424]"></div>
 
               {/* Side Content - 30% */}
               <div className="flex-[3] pl-8">
@@ -263,7 +263,7 @@ function HomePage() {
 
 export default function Home() {
   return (
-    <Suspense fallback={<div className="fixed inset-0 bg-white z-50" />}>
+    <Suspense fallback={<div className="fixed inset-0 bg-[#eee5da] z-50" />}>
       <HomePage />
     </Suspense>
   );

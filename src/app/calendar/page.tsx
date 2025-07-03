@@ -258,16 +258,14 @@ export default function CalendarPage() {
       const dayElement = (
         <div
           key={dateString}
-          className={`aspect-square relative border border-black transition-all ${
-            isUnavailable
-              ? "cursor-not-allowed bg-white"
-              : "cursor-pointer hover:bg-yellow-200"
+          className={`aspect-square relative border border-[#262424] transition-all ${
+            isUnavailable ? "cursor-not-allowed bg-[#eee5da]" : "cursor-pointer"
           }`}
           style={
             isUnavailable
               ? {
                   backgroundImage:
-                    "repeating-linear-gradient(45deg, transparent, transparent 5px, black 5px, black 7px)",
+                    "repeating-linear-gradient(45deg, transparent, transparent 5px, #262424 5px, #262424 7px)",
                 }
               : {}
           }
@@ -278,12 +276,12 @@ export default function CalendarPage() {
               src={dayData.imageUrl}
               alt={dayData.label}
               fill
-              className="object-cover"
+              className="object-cover mix-blend-multiply no-highlight"
               onLoad={() => handleImageLoad(dayData.imageUrl!)}
               onError={() => handleImageLoad(dayData.imageUrl!)}
             />
           )}
-          <div className="absolute top-2 left-2 bg-white rounded-full w-8 h-8 flex items-center justify-center text-black font-bold text-sm border border-black font-newsreader">
+          <div className="absolute top-2 left-2 bg-[#eee5da] rounded-full w-8 h-8 flex items-center justify-center text-[#262424] font-bold text-sm border border-[#262424] font-newsreader">
             {day}
           </div>
         </div>
@@ -294,12 +292,12 @@ export default function CalendarPage() {
         days.push(
           <HoverCard key={dateString}>
             <HoverCardTrigger asChild>{dayElement}</HoverCardTrigger>
-            <HoverCardContent className="w-80 bg-white border-black text-black">
+            <HoverCardContent className="w-80 bg-[#eee5da] border-[#262424] text-[#262424]">
               <div className="space-y-2">
                 <h4 className="text-sm font-semibold font-newsreader">
                   {dayData.headline}
                 </h4>
-                <p className="text-sm text-gray-600 font-newsreader">
+                <p className="text-sm text-[#262424] font-newsreader">
                   {dayData.label}
                 </p>
               </div>
@@ -325,7 +323,7 @@ export default function CalendarPage() {
   // Early return for mobile devices to prevent loading any content components
   if (isMobile && !initialLoading) {
     return (
-      <div className="min-h-screen bg-white text-black flex items-center justify-center p-8">
+      <div className="min-h-screen bg-[#eee5da] text-[#262424] flex items-center justify-center p-8">
         <div className="text-center max-w-md">
           <Image
             src="/logo.png"
@@ -351,10 +349,10 @@ export default function CalendarPage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-white text-black font-newsreader">
+    <div className="relative min-h-screen bg-[#eee5da] text-[#262424] font-newsreader">
       {/* Loading Overlay */}
       {isLoading && (
-        <div className="fixed inset-0 bg-white bg-opacity-95 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-[#eee5da] bg-opacity-95 z-50 flex items-center justify-center">
           <BanterLoader />
         </div>
       )}
@@ -362,10 +360,10 @@ export default function CalendarPage() {
       {/* Header */}
       <header className="select-none">
         <div className="max-w-6xl mx-auto px-8">
-          <div className="grid grid-cols-3 items-center border-b-2 border-black py-8">
+          <div className="grid grid-cols-3 items-center border-b-2 border-[#262424] py-8">
             <Link
               href="/"
-              className="hover:bg-yellow-200 px-4 py-2 transition-colors justify-self-start"
+              className="hover:bg-[#ffdbc7] px-4 py-2 transition-colors justify-self-start"
             >
               Back to Newspaper
             </Link>
@@ -374,17 +372,17 @@ export default function CalendarPage() {
             </h1>
             <div className="flex gap-4 items-center justify-self-end">
               <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                <SelectTrigger className="w-32 bg-white border-black shadow-none hover:bg-yellow-200 font-newsreader">
+                <SelectTrigger className="w-32 bg-[#eee5da] border-[#262424] shadow-none hover:bg-[#ffdbc7] font-newsreader">
                   <SelectValue placeholder="Month" />
                 </SelectTrigger>
-                <SelectContent className="bg-white border-black">
+                <SelectContent className="bg-[#eee5da] border-[#262424]">
                   {monthOptions.map((month) => (
                     <CustomSelectItem
                       key={month.value}
                       value={month.value}
-                      className={`font-newsreader hover:bg-yellow-200 hover:text-black cursor-pointer ${
+                      className={`font-newsreader hover:bg-[#ffdbc7] hover:text-[#262424] cursor-pointer ${
                         month.value === selectedMonth
-                          ? "bg-black text-white"
+                          ? "bg-[#262424] text-[#eee5da]"
                           : ""
                       }`}
                     >
@@ -394,16 +392,18 @@ export default function CalendarPage() {
                 </SelectContent>
               </Select>
               <Select value={selectedYear} onValueChange={setSelectedYear}>
-                <SelectTrigger className="w-24 bg-white border-black shadow-none hover:bg-yellow-200 font-newsreader">
+                <SelectTrigger className="w-24 bg-[#eee5da] border-[#262424] shadow-none hover:bg-[#ffdbc7] font-newsreader">
                   <SelectValue placeholder="Year" />
                 </SelectTrigger>
-                <SelectContent className="bg-white border-black">
+                <SelectContent className="bg-[#eee5da] border-[#262424]">
                   {yearOptions.map((year) => (
                     <CustomSelectItem
                       key={year.value}
                       value={year.value}
-                      className={`font-newsreader hover:bg-yellow-200 hover:text-black cursor-pointer ${
-                        year.value === selectedYear ? "bg-black text-white" : ""
+                      className={`font-newsreader hover:bg-[#ffdbc7] hover:text-[#262424] cursor-pointer ${
+                        year.value === selectedYear
+                          ? "bg-[#262424] text-[#eee5da]"
+                          : ""
                       }`}
                     >
                       {year.label}
@@ -419,13 +419,13 @@ export default function CalendarPage() {
       {/* Calendar */}
       <div className="max-w-6xl mx-auto px-8 py-8">
         {/* Calendar Grid */}
-        <div className="bg-white border-2 border-black">
+        <div className="bg-[#eee5da] border-2 border-[#262424]">
           {/* Day headers */}
-          <div className="grid grid-cols-7 border-b-2 border-black">
+          <div className="grid grid-cols-7 border-b-2 border-[#262424]">
             {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
               <div
                 key={day}
-                className="p-4 text-center font-bold border-r border-black last:border-r-0 font-newsreader"
+                className="p-4 text-center font-bold border-r border-[#262424] last:border-r-0 font-newsreader"
               >
                 {day}
               </div>
@@ -439,7 +439,7 @@ export default function CalendarPage() {
         </div>
 
         {/* Instructions */}
-        <div className="mt-8 text-center text-sm text-black font-newsreader">
+        <div className="mt-8 text-center text-sm text-[#262424] font-newsreader">
           <p>
             Click on any day with a photo to view that date&apos;s newspaper
           </p>

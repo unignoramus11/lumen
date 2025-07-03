@@ -271,7 +271,7 @@ export default function PublishPage() {
   // Early return for desktop devices to prevent loading any content components
   if (!isMobile && !initialLoading) {
     return (
-      <div className="min-h-screen bg-white text-black flex items-center justify-center p-8">
+      <div className="min-h-screen bg-[#eee5da] text-[#262424] flex items-center justify-center p-8">
         <div className="text-center max-w-md">
           <Image
             src="/logo.png"
@@ -297,22 +297,20 @@ export default function PublishPage() {
   // Login form
   if (!isAuthenticated && !initialLoading) {
     return (
-      <div className="min-h-screen bg-white text-black font-newsreader">
+      <div className="min-h-screen bg-[#eee5da] text-[#262424] font-newsreader">
         {/* Toast Notification */}
         {toast.visible && (
           <div className="fixed top-8 left-1/2 transform -translate-x-1/2 z-40 max-w-md">
             <div
               className={`border-4 p-4 font-newsreader ${
                 toast.type === "success"
-                  ? "border-black bg-white text-black"
-                  : "border-black bg-black text-white"
+                  ? "border-[#262424] bg-[#eee5da] text-[#262424]"
+                  : "border-[#262424] bg-[#262424] text-[#eee5da]"
               }`}
             >
               <div className="text-center">
                 <div className="text-xs uppercase tracking-widest mb-1">
-                  {toast.type === "success"
-                    ? "SUCCESS"
-                    : "ERROR"}
+                  {toast.type === "success" ? "SUCCESS" : "ERROR"}
                 </div>
                 <div className="font-bold text-sm">{toast.message}</div>
               </div>
@@ -324,7 +322,7 @@ export default function PublishPage() {
         <header className="py-8 select-none">
           <div className="max-w-6xl mx-auto px-8">
             <div className="text-center">
-              <div className="border-t-2 border-b-2 border-black py-2 mb-4">
+              <div className="border-t-2 border-b-2 border-[#262424] py-2 mb-4">
                 <div className="grid grid-cols-3 items-center text-sm">
                   <span className="px-2 py-1 rounded justify-self-start">
                     ESTABLISHED 2025
@@ -353,7 +351,7 @@ export default function PublishPage() {
                 Sigma
               </h1>
 
-              <div className="border-t-2 border-b-2 border-black py-2">
+              <div className="border-t-2 border-b-2 border-[#262424] py-2">
                 EDITOR AUTHENTICATION REQUIRED
               </div>
             </div>
@@ -361,7 +359,7 @@ export default function PublishPage() {
         </header>
 
         <main className="max-w-2xl mx-auto p-8">
-          <div className="border-2 border-black p-8 bg-white">
+          <div className="border-2 border-[#262424] p-8 bg-[#eee5da]">
             <h2 className="text-3xl font-bold mb-6 text-center font-newsreader">
               EDITOR LOGIN
             </h2>
@@ -376,14 +374,14 @@ export default function PublishPage() {
                   placeholder="Enter password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full p-4 border-2 border-black bg-white text-black focus:outline-none font-newsreader"
+                  className="w-full p-4 border-2 border-[#262424] bg-[#eee5da] text-[#262424] focus:outline-none font-newsreader"
                   required
                 />
               </div>
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full p-4 bg-black text-white font-bold uppercase tracking-wide disabled:opacity-50 border-2 border-black hover:bg-white hover:text-black transition-colors font-newsreader"
+                className="w-full p-4 bg-[#262424] text-[#eee5da] font-bold uppercase tracking-wide disabled:opacity-50 border-2 border-[#262424] hover:bg-[#eee5da] hover:text-[#262424] transition-colors font-newsreader"
               >
                 {loading ? "AUTHENTICATING..." : "AUTHENTICATE"}
               </button>
@@ -396,10 +394,10 @@ export default function PublishPage() {
 
   // Publish form
   return (
-    <div className="relative min-h-screen bg-white text-black font-newsreader">
+    <div className="relative min-h-screen bg-[#eee5da] text-[#262424] font-newsreader">
       {/* Loading Overlay */}
       {isLoading && (
-        <div className="fixed inset-0 bg-white bg-opacity-95 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-[#eee5da] bg-opacity-95 z-50 flex items-center justify-center">
           <BanterLoader />
         </div>
       )}
@@ -410,15 +408,13 @@ export default function PublishPage() {
           <div
             className={`border-4 p-4 font-newsreader ${
               toast.type === "success"
-                ? "border-black bg-white text-black"
-                : "border-black bg-black text-white"
+                ? "border-[#262424] bg-[#eee5da] text-[#262424]"
+                : "border-[#262424] bg-[#262424] text-[#eee5da]"
             }`}
           >
             <div className="text-center">
               <div className="text-xs uppercase tracking-widest mb-1">
-                {toast.type === "success"
-                  ? "SUCCESS"
-                  : "ERROR"}
+                {toast.type === "success" ? "SUCCESS" : "ERROR"}
               </div>
               <div className="font-bold text-sm">{toast.message}</div>
             </div>
@@ -430,7 +426,7 @@ export default function PublishPage() {
       <header className="py-8 select-none">
         <div className="max-w-6xl mx-auto px-8">
           <div className="text-center">
-            <div className="border-t-2 border-b-2 border-black py-2 mb-4">
+            <div className="border-t-2 border-b-2 border-[#262424] py-2 mb-4">
               <div className="grid grid-cols-3 items-center text-sm">
                 <span className="px-2 py-1 rounded justify-self-start">
                   ESTABLISHED 2025
@@ -459,7 +455,7 @@ export default function PublishPage() {
               Sigma
             </h1>
 
-            <div className="border-t-2 border-b-2 border-black py-2">
+            <div className="border-t-2 border-b-2 border-[#262424] py-2">
               {isEditing ? "CONTENT EDITOR" : "DAILY PUBLISHER"}
             </div>
           </div>
@@ -467,9 +463,9 @@ export default function PublishPage() {
       </header>
 
       <main className="max-w-4xl mx-auto p-8">
-        <div className="border-4 border-black bg-white">
+        <div className="border-4 border-[#262424] bg-[#eee5da]">
           {/* Form Header */}
-          <div className="border-b-2 border-black p-6 bg-gray-50">
+          <div className="border-b-2 border-[#262424] p-6 bg-[#eee5da]">
             <h2 className="text-4xl font-bold text-center font-newsreader">
               {isEditing ? "EDIT TODAY'S EDITION" : "PUBLISH TODAY'S EDITION"}
             </h2>
@@ -479,8 +475,8 @@ export default function PublishPage() {
           <div className="p-8">
             <form onSubmit={handlePublish} className="space-y-8">
               {/* Headline Section */}
-              <div className="border-2 border-black p-6">
-                <h3 className="text-xl font-bold mb-4 uppercase tracking-wide border-b border-black pb-2">
+              <div className="border-2 border-[#262424] p-6">
+                <h3 className="text-xl font-bold mb-4 uppercase tracking-wide border-b border-[#262424] pb-2">
                   Main Headline
                 </h3>
                 <input
@@ -492,15 +488,15 @@ export default function PublishPage() {
                       headline: e.target.value,
                     }))
                   }
-                  className="w-full p-4 border-2 border-black bg-white text-black focus:outline-none text-lg font-newsreader"
+                  className="w-full p-4 border-2 border-[#262424] bg-[#eee5da] text-[#262424] focus:outline-none text-lg font-newsreader"
                   placeholder="Enter today's headline"
                   required
                 />
               </div>
 
               {/* Photo Section */}
-              <div className="border-2 border-black p-6">
-                <h3 className="text-xl font-bold mb-4 uppercase tracking-wide border-b border-black pb-2">
+              <div className="border-2 border-[#262424] p-6">
+                <h3 className="text-xl font-bold mb-4 uppercase tracking-wide border-b border-[#262424] pb-2">
                   Featured Photograph
                 </h3>
 
@@ -509,7 +505,7 @@ export default function PublishPage() {
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-full p-6 border-2 border-dashed border-black bg-gray-50 hover:bg-gray-100 transition-colors text-center font-newsreader"
+                    className="w-full p-6 border-2 border-dashed border-[#262424] bg-[#eee5da] hover:bg-[#eee5da] transition-colors text-center font-newsreader"
                   >
                     <div className="space-y-2">
                       <div className="text-lg font-bold">
@@ -517,7 +513,7 @@ export default function PublishPage() {
                           ? "CHANGE PHOTOGRAPH"
                           : "UPLOAD PHOTOGRAPH"}
                       </div>
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-[#262424]">
                         Tap to select an image file
                       </div>
                     </div>
@@ -533,11 +529,11 @@ export default function PublishPage() {
                   />
 
                   {publishData.photo && (
-                    <div className="border-2 border-black p-4 bg-yellow-50">
+                    <div className="border-2 border-[#262424] p-4 bg-[#ffdbc7]">
                       <p className="text-sm font-bold text-center">
                         PHOTOGRAPH SELECTED: {publishData.photo.name}
                       </p>
-                      <p className="text-xs text-center mt-1 text-gray-600">
+                      <p className="text-xs text-center mt-1 text-[#262424]">
                         Image will be automatically compressed to under 100KB
                       </p>
                     </div>
@@ -546,8 +542,8 @@ export default function PublishPage() {
               </div>
 
               {/* Caption Section */}
-              <div className="border-2 border-black p-6">
-                <h3 className="text-xl font-bold mb-4 uppercase tracking-wide border-b border-black pb-2">
+              <div className="border-2 border-[#262424] p-6">
+                <h3 className="text-xl font-bold mb-4 uppercase tracking-wide border-b border-[#262424] pb-2">
                   Photograph Caption
                 </h3>
                 <textarea
@@ -558,14 +554,14 @@ export default function PublishPage() {
                       label: e.target.value,
                     }))
                   }
-                  className="w-full p-4 border-2 border-black bg-white text-black focus:outline-none h-32 font-newsreader resize-none"
+                  className="w-full p-4 border-2 border-[#262424] bg-[#eee5da] text-[#262424] focus:outline-none h-32 font-newsreader resize-none"
                   placeholder="Enter descriptive caption for the photograph"
                   required
                 />
               </div>
 
               {/* Information Box */}
-              <div className="border-2 border-black p-6 bg-yellow-50">
+              <div className="border-2 border-[#262424] p-6 bg-[#ffdbc7]">
                 <h3 className="text-lg font-bold mb-3 uppercase tracking-wide">
                   Editorial Notes
                 </h3>
@@ -590,7 +586,7 @@ export default function PublishPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="p-4 border-2 border-black bg-black text-white font-bold uppercase tracking-wide disabled:opacity-50 hover:bg-white hover:text-black transition-colors font-newsreader w-full"
+                  className="p-4 border-2 border-[#262424] bg-[#262424] text-[#eee5da] font-bold uppercase tracking-wide disabled:opacity-50 hover:bg-[#eee5da] hover:text-[#262424] transition-colors font-newsreader w-full"
                 >
                   {loading
                     ? "PUBLISHING..."

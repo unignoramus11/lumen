@@ -23,7 +23,7 @@
   top: 0;
   width: 100%;
   height: 100%;
-  background: #000; /* Inverted color - black instead of white */
+  background: #262424; /* Inverted color - [#262424] instead of white */
 }
 
 .banter-loader__box:nth-child(3n) {

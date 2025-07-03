@@ -110,7 +110,7 @@ export default function NewspaperDatePicker({
       </PopoverTrigger>
       <PopoverContent
         ref={popoverRef}
-        className="w-auto p-0 bg-white border border-black"
+        className="w-auto p-0 bg-[#eee5da] border border-[#262424]"
         align="end"
         sideOffset={4}
       >
@@ -129,7 +129,7 @@ export default function NewspaperDatePicker({
             const nowIST = getCurrentISTDate();
             return date > nowIST;
           }}
-          className="bg-white w-auto"
+          className="bg-[#eee5da] w-auto"
         />
       </PopoverContent>
     </Popover>
