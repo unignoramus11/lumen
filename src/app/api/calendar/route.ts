@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     const daysInMonth = new Date(yearNum, monthNum, 0).getDate();
     const calendarData: Record<
       string,
-      { imageUrl: string | null; label: string }
+      { headline?: string; imageUrl: string | null; label: string }
     > = {};
 
     // Get current date in IST using the utility function
@@ -77,6 +77,7 @@ export async function GET(request: NextRequest) {
                 )}`
               : dailyContent.photo?.imageUrl || null,
             label: dailyContent.photo?.label || dateString,
+            headline: dailyContent.headline,
           };
         } else {
           // No data available for this date

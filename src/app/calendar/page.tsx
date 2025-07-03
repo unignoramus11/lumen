@@ -11,11 +11,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { cn } from "@/lib/utils";
 import { getCurrentISTDate } from "@/lib/ist-utils";
 
 interface CalendarDay {
+  headline?: string;
   imageUrl: string | null;
   label: string;
 }
@@ -249,7 +255,7 @@ export default function CalendarPage() {
       const hasImage = dayData?.imageUrl;
       const isUnavailable = isFuture || !hasImage;
 
-      days.push(
+      const dayElement = (
         <div
           key={dateString}
           className={`aspect-square relative border border-black transition-all ${
@@ -282,6 +288,27 @@ export default function CalendarPage() {
           </div>
         </div>
       );
+
+      // Wrap with hover card if there's content available
+      if (hasImage && !isUnavailable && dayData?.headline) {
+        days.push(
+          <HoverCard key={dateString}>
+            <HoverCardTrigger asChild>{dayElement}</HoverCardTrigger>
+            <HoverCardContent className="w-80 bg-white border-black text-black">
+              <div className="space-y-2">
+                <h4 className="text-sm font-semibold font-newsreader">
+                  {dayData.headline}
+                </h4>
+                <p className="text-sm text-gray-600 font-newsreader">
+                  {dayData.label}
+                </p>
+              </div>
+            </HoverCardContent>
+          </HoverCard>
+        );
+      } else {
+        days.push(dayElement);
+      }
     }
 
     return days;
