@@ -33,10 +33,10 @@ export async function GET() {
       // Select a random poem from the fetched list.
       const randomPoem = poemData[Math.floor(Math.random() * poemData.length)];
 
-      // Clean up the poem lines: remove underscores and replace "--" with "–".
-      const cleanedLines = randomPoem.lines.map((line: string) =>
-        line.replace(/_/g, "").replace(/--/g, "–")
-      );
+      // Clean up the poem lines: remove underscores and replace "--" with "–" and filter out blank lines.
+      const cleanedLines = randomPoem.lines
+        .map((line: string) => line.replace(/_/g, "").replace(/--/g, "–"))
+        .filter((line: string) => line.trim() !== "");
 
       // Return the cleaned poem data.
       return NextResponse.json({
