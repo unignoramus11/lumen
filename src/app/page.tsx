@@ -18,7 +18,7 @@ import SideContent from "../components/SideContent";
 import Facts from "../components/Facts";
 import Todo from "../components/Todo";
 import Comic from "../components/Comic";
-import { fetchDailyData } from "../lib/api";
+import { fetchDailyData, fetchLatestAvailableDate } from "../lib/api";
 import type { DailyData } from "../types";
 
 /**
@@ -118,6 +118,7 @@ function HomePage() {
    * - Adds and removes a resize event listener for dynamic mobile detection.
    * - Sets a minimum loading time to prevent flashing content.
    * - Parses a 'date' parameter from the URL query string to pre-select a date.
+   * - Fetches the latest available date with content if no date parameter is provided.
    */
   useEffect(() => {
     setIsClient(true); // Indicate that the component has mounted on the client
@@ -149,6 +150,16 @@ function HomePage() {
       } catch (error) {
         console.error("Invalid date parameter:", dateParam, error);
       }
+    } else {
+      // If no date parameter, fetch the latest available date with content
+      fetchLatestAvailableDate()
+        .then((dateString) => {
+          setSelectedDate(new Date(dateString));
+        })
+        .catch((error) => {
+          console.error("Failed to fetch latest available date:", error);
+          // Keep the default yesterday date on error
+        });
     }
 
     /**

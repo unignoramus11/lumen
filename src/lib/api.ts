@@ -26,3 +26,19 @@ export async function fetchDailyData(date: string): Promise<DailyData> {
   // Parse the JSON response and return the data.
   return response.json();
 }
+
+/**
+ * Fetches the latest available date with content before today.
+ * Uses MongoDB query to efficiently find the most recent date with content.
+ * @returns {Promise<string>} A promise that resolves with the latest available date in YYYY-MM-DD format.
+ */
+export async function fetchLatestAvailableDate(): Promise<string> {
+  const response = await fetch('/api/latest-date');
+  
+  if (!response.ok) {
+    throw new Error(`Failed to fetch latest date: ${response.status}`);
+  }
+  
+  const { date } = await response.json();
+  return date;
+}
