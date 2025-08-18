@@ -145,6 +145,13 @@ export default function NewspaperDatePicker({
   );
 
   /**
+   * useEffect hook to sync the internal date state with the selectedDate prop.
+   */
+  useEffect(() => {
+    setDate(selectedDate);
+  }, [selectedDate]);
+
+  /**
    * useEffect hook to add and remove the mousemove event listener.
    * The listener is active only when the popover is open to efficiently track mouse position.
    */
